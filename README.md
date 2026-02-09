@@ -3,7 +3,7 @@
 Москвитин Владислав. Прикладной анализ данных и искусственный интеллект. 4 курс.
 
 Работа опирается на статью:
-> Bostan, Lecerf, Schost, *A Faster Algorithm for Power Series Composition*, arXiv:2404.05177, 2024.
+> Kinoshita, Li, *Power Series Composition in Near-Linear Time*, arXiv:2404.05177, 2024.
 
 
 Композиция степенных рядов — это вычисление формального ряда  

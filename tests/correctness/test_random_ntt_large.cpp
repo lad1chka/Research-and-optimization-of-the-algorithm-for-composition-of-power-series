@@ -1,7 +1,4 @@
-// Stress test that the *_opt NTT-backed variants stay exact at sizes where
-// quadratic baselines are too slow to act as oracles. Brent-Kung optimized
-// becomes the reference, justified because the prior small-N tests already
-// pin every variant against naive Horner.
+// Cross-check optimized NTT variants against compose_brent_kung_opt at large n.
 
 #include <gtest/gtest.h>
 
@@ -15,7 +12,7 @@ namespace {
 void cross_check_large(std::size_t n) {
     std::mt19937 rng(kSeed ^ static_cast<std::uint32_t>(n + 17));
     auto f = random_ntt(n, rng);
-    auto g = random_ntt(n, rng, /*g0_zero=*/true);
+    auto g = random_ntt(n, rng, true);
 
     auto reference = pscomp::algo::compose_brent_kung_opt<ModInt998>(f, g, n);
 

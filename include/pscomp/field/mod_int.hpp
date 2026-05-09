@@ -1,12 +1,4 @@
-// Modular integer types over the NTT-friendly prime 998244353 = 119 * 2^23 + 1.
-//
-// Two coexisting representations are exposed so that the basic and optimized
-// builds of NTT can share a single coefficient type without conditional
-// compilation:
-//
-//   ModInt998      : Montgomery form, fast multiplication, lazy reduction.
-//   ModInt998Plain : straightforward `% P` arithmetic, used by the *_basic
-//                    backends and as a reference for benchmarks.
+// Modular integers over the NTT prime 998244353.
 
 #ifndef PSCOMP_FIELD_MOD_INT_HPP
 #define PSCOMP_FIELD_MOD_INT_HPP
@@ -17,8 +9,8 @@
 namespace pscomp {
 
 inline constexpr std::uint32_t kPrime998      = 998244353u;
-inline constexpr std::uint32_t kPrime998Root  = 3u;          // primitive root
-inline constexpr std::uint32_t kPrime998Order = 1u << 23;    // 2^23 divides P-1
+inline constexpr std::uint32_t kPrime998Root  = 3u;
+inline constexpr std::uint32_t kPrime998Order = 1u << 23;
 
 namespace detail {
 
@@ -36,7 +28,7 @@ constexpr std::uint32_t powmod32(std::uint32_t a, std::uint64_t e) noexcept {
     return r;
 }
 
-// -P^{-1} mod 2^32, derived via 5 Newton iterations (each doubles correct bits).
+// -P^{-1} mod 2^32 via Newton iteration.
 constexpr std::uint32_t mont_ninv() noexcept {
     std::uint32_t x = 1u;
     for (int i = 0; i < 5; ++i) x *= 2u - kPrime998 * x;
@@ -44,19 +36,19 @@ constexpr std::uint32_t mont_ninv() noexcept {
 }
 
 constexpr std::uint32_t mont_r1() noexcept {
-    return static_cast<std::uint32_t>((1ull << 32) % kPrime998);  // R mod P
+    return static_cast<std::uint32_t>((1ull << 32) % kPrime998);
 }
 
 constexpr std::uint32_t mont_r2() noexcept {
     const std::uint64_t r = mont_r1();
-    return static_cast<std::uint32_t>((r * r) % kPrime998);        // R^2 mod P
+    return static_cast<std::uint32_t>((r * r) % kPrime998);
 }
 
 inline constexpr std::uint32_t kMontNInv = mont_ninv();
 inline constexpr std::uint32_t kMontR1   = mont_r1();
 inline constexpr std::uint32_t kMontR2   = mont_r2();
 
-// Montgomery reduction: (a / R) mod P, with a < P * R.
+// (a / R) mod P with a < P * R.
 inline std::uint32_t mont_reduce(std::uint64_t a) noexcept {
     const std::uint32_t m = static_cast<std::uint32_t>(a) * kMontNInv;
     const std::uint64_t t = (a + static_cast<std::uint64_t>(m) * kPrime998) >> 32;
@@ -105,7 +97,7 @@ public:
     friend bool operator!=(ModInt998 a, ModInt998 b) noexcept { return a.v_ != b.v_; }
 
     ModInt998 pow(std::uint64_t e) const noexcept {
-        ModInt998 r = ModInt998::from_raw(detail::kMontR1);  // 1 in Montgomery form
+        ModInt998 r = ModInt998::from_raw(detail::kMontR1);
         ModInt998 b = *this;
         while (e) {
             if (e & 1u) r *= b;
@@ -121,11 +113,9 @@ public:
     }
 
 private:
-    std::uint32_t v_ = 0;  // value in Montgomery form
+    std::uint32_t v_ = 0;
 };
 
-// Reference / "_basic" implementation used to demonstrate the cost of every
-// modular multiplication going through a hardware division.
 class ModInt998Plain {
 public:
     constexpr ModInt998Plain() noexcept = default;
@@ -174,4 +164,4 @@ private:
 
 }  // namespace pscomp
 
-#endif  // PSCOMP_FIELD_MOD_INT_HPP
+#endif

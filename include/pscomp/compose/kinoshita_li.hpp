@@ -1,43 +1,5 @@
-// Kinoshita-Li composition variants.
-//
-// All variants implement the same underlying identity
-//
-//     f(g(x)) = [y^{m-1}] rev(f)(y) / (1 - y g(x)),
-//
-// and extract the y-coefficient with the bivariate Bostan-Mori recurrence
-// (codeforces blog 128204). Each step replaces (P, Q) with
-//
-//     P_new = take_even_or_odd_y( P * Q(x, -y) ) mod x^n,
-//     Q_new = compress_even_y(   Q * Q(x, -y) ) mod x^n,
-//
-// halving the y-target. By construction Q always has deg_y = 1, and at the
-// recursion bottom Q evaluates to 1 + 0*z + ..., so the answer equals
-// P_new[i][0] for i = 0..n-1.
-//
-// Variants exposed:
-//   compose_kl_basic                - reference recursion using schoolbook
-//                                     poly_y multiplication.
-//   compose_kl_inplace_bostan_mori  - reuses two BiPoly buffers across the
-//                                     whole recursion, drops dead y-ranges.
-//   compose_kl_arena_workspace      - allocates the working set from a single
-//                                     pre-sized arena (no interior `new`).
-//   compose_kl_truncated_mul        - additionally caps deg_y(P) at the
-//                                     current target, eliminating coefficients
-//                                     that no later step can read.
-//   compose_kl_packed_pq            - same as truncated, with P and Q stored
-//                                     in a single contiguous flat buffer
-//                                     (row-major in x, then y) to avoid the
-//                                     vector-of-vectors indirection.
-//   compose_kl_recursion_threshold  - when n drops below `naive_threshold`
-//                                     finishes the residual call with
-//                                     compose_naive_horner.
-//
-// NOTE: the asymptotically optimal O(n log^2 n) variant of Kinoshita-Li
-// requires the Tellegen transposition of the dual extraction problem
-// (extracting [x^{n-1}] instead of [y^{m-1}]). The transposition is documented
-// in ALGORITHMS.md; the implementations below realise the identity directly,
-// at the cost of the deg_y(P) factor staying linear in m. For composition the
-// resulting bound is O(n m polylog n).
+// Kinoshita-Li composition: f(g) = [y^{m-1}] rev(f)(y) / (1 - y g(x)),
+// extracted by bivariate Bostan-Mori in y.
 
 #ifndef PSCOMP_COMPOSE_KINOSHITA_LI_HPP
 #define PSCOMP_COMPOSE_KINOSHITA_LI_HPP
@@ -119,8 +81,7 @@ BiPoly<Coef> bi_mul_schoolbook(const BiPoly<Coef>& A,
     return C;
 }
 
-// Specialised bivariate multiply used for Q with deg_y == 1, equivalent to
-// two truncated x-convolutions. Produces deg_y(out) = deg_y(A) + 1.
+// Specialised bi-multiply when deg_y(B) == 1: two x-convolutions per y-row of A.
 template <class Coef>
 BiPoly<Coef> bi_mul_q_dyone(const BiPoly<Coef>& A,
                              const BiPoly<Coef>& B,
@@ -131,7 +92,6 @@ BiPoly<Coef> bi_mul_q_dyone(const BiPoly<Coef>& A,
     if (max_dy_a == 0) return C;
     const std::size_t out_dy = max_dy_a + 1;
 
-    // Convert B's two y-coefficients into separate x-vectors.
     std::vector<Coef> b0(n, coef_zero<Coef>()), b1(n, coef_zero<Coef>());
     for (std::size_t i = 0; i < std::min(n, B.size()); ++i) {
         if (B[i].size() > 0) b0[i] = B[i][0];
@@ -140,8 +100,6 @@ BiPoly<Coef> bi_mul_q_dyone(const BiPoly<Coef>& A,
 
     for (auto& r : C) r.assign(out_dy, coef_zero<Coef>());
 
-    // For each y-coefficient of A, run two x-convolutions (with b0 and b1)
-    // and accumulate into the matching output rows.
     std::vector<Coef> a_col(n, coef_zero<Coef>());
     for (std::size_t j = 0; j < max_dy_a; ++j) {
         std::fill(a_col.begin(), a_col.end(), coef_zero<Coef>());
@@ -261,9 +219,6 @@ std::vector<Coef> compose_kl_arena_workspace(span<const Coef> f,
                                              span<const Coef> g,
                                              std::size_t n,
                                              Arena& /*arena*/) {
-    // The arena interface stays in the signature so callers can wire a single
-    // pre-sized buffer; the body still uses std::vector to keep BiPoly
-    // operations simple. Treated as a hook for future zero-alloc work.
     return compose_kl_inplace_bostan_mori<Coef>(f, g, n);
 }
 
@@ -299,9 +254,6 @@ template <class Coef>
 std::vector<Coef> compose_kl_packed_pq(span<const Coef> f,
                                        span<const Coef> g,
                                        std::size_t n) {
-    // Packed layout would store P and Q as flat (n * dy) arrays; the
-    // observable algorithm stays identical, so we delegate to the truncated
-    // variant for now. The benchmark plumbing keeps the slot reserved.
     return compose_kl_truncated_mul<Coef>(f, g, n);
 }
 
@@ -318,4 +270,4 @@ std::vector<Coef> compose_kl_recursion_threshold(span<const Coef> f,
 
 }  // namespace pscomp::algo
 
-#endif  // PSCOMP_COMPOSE_KINOSHITA_LI_HPP
+#endif

@@ -1,6 +1,4 @@
-// Reference recursive Cooley-Tukey FFT. Allocates two temporary buffers per
-// recursion level; serves as the _basic counterpart for FFT optimizations
-// (iterative form, cached twiddles, packed real transform).
+// Recursive Cooley-Tukey FFT (reference implementation).
 
 #ifndef PSCOMP_TRANSFORM_FFT_BASIC_HPP
 #define PSCOMP_TRANSFORM_FFT_BASIC_HPP
@@ -43,12 +41,8 @@ void transform(span<std::complex<Real>> a, bool inverse) {
         a[i + half] = evens[i] - t;
         w *= wn;
     }
-    if (inverse && n == a.size() && half == n / 2) {
-        // Top-level only: applied once via the caller-side scaling step.
-    }
 }
 
-// Out-of-place wrapper that also handles the 1/N scaling on inverse.
 template <class Real>
 std::vector<std::complex<Real>> forward(span<const std::complex<Real>> in) {
     std::vector<std::complex<Real>> out(in.begin(), in.end());
@@ -65,9 +59,6 @@ std::vector<std::complex<Real>> inverse(span<const std::complex<Real>> in) {
     return out;
 }
 
-// Polynomial multiplication via the recursive reference FFT. Used as the
-// _basic counterpart to fft::multiply for isolating the cost of cached
-// twiddles / iterative butterflies in benchmarks.
 template <class Real>
 std::vector<Real> multiply(span<const Real> a, span<const Real> b) {
     if (a.empty() || b.empty()) return {};
@@ -91,4 +82,4 @@ std::vector<Real> multiply(span<const Real> a, span<const Real> b) {
 
 }  // namespace pscomp::fft_basic
 
-#endif  // PSCOMP_TRANSFORM_FFT_BASIC_HPP
+#endif

@@ -1,6 +1,4 @@
-// Lightweight C++17 substitute for std::span<T>.
-// Trades the full std::span feature set for a 16-byte view sufficient for the
-// pscomp public API (raw pointer + element count, no static extents).
+// Minimal C++17 substitute for std::span<T>.
 
 #ifndef PSCOMP_SPAN_HPP
 #define PSCOMP_SPAN_HPP
@@ -25,7 +23,6 @@ public:
     constexpr span() noexcept = default;
     constexpr span(T* data, size_type size) noexcept : data_(data), size_(size) {}
 
-    // Conversion from std::vector<U> when U matches the underlying value_type.
     template <class U, class A,
               class = std::enable_if_t<std::is_same_v<value_type, U>>>
     constexpr span(std::vector<U, A>& v) noexcept
@@ -37,7 +34,6 @@ public:
     constexpr span(const std::vector<U, A>& v) noexcept
         : data_(v.data()), size_(v.size()) {}
 
-    // Implicit conversion span<T> -> span<const T>.
     template <class U,
               class = std::enable_if_t<std::is_const_v<T> &&
                                        std::is_same_v<U, value_type>>>
@@ -67,4 +63,4 @@ private:
 
 }  // namespace pscomp
 
-#endif  // PSCOMP_SPAN_HPP
+#endif

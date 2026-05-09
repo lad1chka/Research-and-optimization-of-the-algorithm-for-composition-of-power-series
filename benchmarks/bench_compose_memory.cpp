@@ -1,10 +1,4 @@
-// Memory benchmarks. Two complementary measurements per case:
-//   * `bytes_alloc`  - sum of allocations routed through CountingResource
-//                      (only library allocations through pmr).
-//   * `peak_rss_kb`  - maximum resident set size of the whole process via
-//                      getrusage(RUSAGE_SELF).ru_maxrss before/after the run.
-//
-// CSV export: `--benchmark_format=csv --benchmark_out=memory.csv`.
+// Memory benchmarks: bytes routed through CountingResource and peak RSS.
 
 #include <benchmark/benchmark.h>
 #include <sys/resource.h>
@@ -24,9 +18,9 @@ std::size_t peak_rss_kb() {
     rusage ru{};
     if (getrusage(RUSAGE_SELF, &ru) != 0) return 0;
 #if defined(__APPLE__)
-    return static_cast<std::size_t>(ru.ru_maxrss / 1024);  // bytes -> kB
+    return static_cast<std::size_t>(ru.ru_maxrss / 1024);
 #else
-    return static_cast<std::size_t>(ru.ru_maxrss);          // kB on Linux
+    return static_cast<std::size_t>(ru.ru_maxrss);
 #endif
 }
 
@@ -70,6 +64,8 @@ void register_all() {
         return compose_kl_basic<ModInt998>(f, g, n); }, 4096);
     reg("mem/kl_truncated_mul",    [](auto f, auto g, std::size_t n) {
         return compose_kl_truncated_mul<ModInt998>(f, g, n); }, 16384);
+    reg("mem/kl_tellegen",         [](auto f, auto g, std::size_t n) {
+        return compose_kl_tellegen<ModInt998>(f, g, n); }, 4096);
 }
 
 }  // namespace

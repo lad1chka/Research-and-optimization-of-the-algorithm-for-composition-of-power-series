@@ -1,7 +1,4 @@
-// Reference recursive NTT over the prime 998244353. Operates on ModInt998Plain
-// (straight `% P` arithmetic) so that benchmarks can isolate three combined
-// effects against the optimized variant: recursive vs iterative form,
-// per-call twiddle generation vs cache, and `% P` vs Montgomery multiplication.
+// Recursive NTT over 998244353 with plain `% P` arithmetic.
 
 #ifndef PSCOMP_TRANSFORM_NTT_BASIC_HPP
 #define PSCOMP_TRANSFORM_NTT_BASIC_HPP
@@ -61,4 +58,4 @@ inline std::vector<ModInt998Plain> multiply(span<const ModInt998Plain> a,
 
 }  // namespace pscomp::ntt_basic
 
-#endif  // PSCOMP_TRANSFORM_NTT_BASIC_HPP
+#endif

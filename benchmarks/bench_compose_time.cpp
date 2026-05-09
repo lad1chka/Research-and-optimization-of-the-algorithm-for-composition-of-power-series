@@ -1,10 +1,4 @@
-// Time benchmarks for every (algorithm, optimization level, backend, n)
-// combination we care about. Google Benchmark already reports mean times
-// across repetitions; the registrations below intentionally avoid hot-cache
-// reuse by allocating fresh inputs in each iteration's setup.
-//
-// CSV export: run with `--benchmark_format=csv --benchmark_out=results.csv`.
-// The plotting scripts under doc/ (left as future work) rely on this format.
+// Time benchmarks per (algorithm, backend, n).
 
 #include <benchmark/benchmark.h>
 
@@ -35,7 +29,6 @@ void register_all_ntt() {
         }
     };
 
-    // O(n^2) baselines: only run up to a moderate n.
     add("ntt/naive_horner", [](auto f, auto g, std::size_t n) {
         return n <= 4096
             ? compose_naive_horner<ModInt998>(f, g, n)
@@ -72,6 +65,11 @@ void register_all_ntt() {
             ? compose_kl_recursion_threshold<ModInt998>(f, g, n, 64)
             : std::vector<ModInt998>(n);
     });
+    add("ntt/kl_tellegen", [](auto f, auto g, std::size_t n) {
+        return n <= 4096
+            ? compose_kl_tellegen<ModInt998>(f, g, n)
+            : std::vector<ModInt998>(n);
+    });
 }
 
 void register_all_fft() {
@@ -103,6 +101,11 @@ void register_all_fft() {
     add("fft/kl_truncated_mul", [](auto f, auto g, std::size_t n) {
         return n <= 16384
             ? compose_kl_truncated_mul<double>(f, g, n)
+            : std::vector<double>(n);
+    });
+    add("fft/kl_tellegen", [](auto f, auto g, std::size_t n) {
+        return n <= 4096
+            ? compose_kl_tellegen<double>(f, g, n)
             : std::vector<double>(n);
     });
 }

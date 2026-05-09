@@ -1,12 +1,4 @@
-// Polynomial multiplication backends and their dispatcher.
-//
-// Variants exposed:
-//   mul_schoolbook     - O(n*m) reference, valid for any coefficient type.
-//   mul_fft            - O(n log n) FFT for double / long double.
-//   mul_ntt            - O(n log n) NTT (Montgomery) over ModInt998.
-//   mul_ntt_basic      - O(n log n) NTT (plain `% P`) over ModInt998Plain.
-//   mul                - selects the optimized backend by coefficient type.
-//   mul_truncated      - keeps only the first `n` coefficients (used by KL/BK).
+// Polynomial multiplication backends and a coefficient-type dispatcher.
 
 #ifndef PSCOMP_POLY_POLY_MUL_HPP
 #define PSCOMP_POLY_POLY_MUL_HPP
@@ -61,7 +53,6 @@ inline std::vector<ModInt998Plain> mul_ntt_basic(span<const ModInt998Plain> a,
     return ntt_basic::multiply(a, b);
 }
 
-// Default optimized dispatch.
 template <class Coef>
 std::vector<Coef> mul(span<const Coef> a, span<const Coef> b) {
     if constexpr (std::is_same_v<Coef, ModInt998>) {
@@ -85,4 +76,4 @@ std::vector<Coef> mul_truncated(span<const Coef> a, span<const Coef> b,
 
 }  // namespace pscomp::poly
 
-#endif  // PSCOMP_POLY_POLY_MUL_HPP
+#endif

@@ -1,6 +1,4 @@
-// Error reporting helper used by the FFT precision tests. Keeps the per-test
-// statistics (min / max / mean / variance / quantiles) close to the assertion
-// site so failures print the full distribution at once.
+// Per-pair error distribution (min/max/mean/var/quantiles, abs and rel).
 
 #ifndef PSCOMP_TESTS_PRECISION_ERROR_STATS_HPP
 #define PSCOMP_TESTS_PRECISION_ERROR_STATS_HPP
@@ -15,19 +13,15 @@
 namespace pscomp_tests {
 
 struct ErrorStats {
-    // Absolute deltas |a_i - b_i|.
     double min{0.0};
     double max{0.0};
     double mean{0.0};
     double variance{0.0};
     double q10{0.0}, q25{0.0}, q50{0.0}, q75{0.0}, q90{0.0};
-    // Relative deltas |a_i - b_i| / max(|a_i|, |b_i|, rel_floor). Useful when
-    // the underlying series values span many orders of magnitude, which makes
-    // the absolute error dominated by the largest coefficients.
     double rel_max{0.0};
     double rel_mean{0.0};
     double rel_q90{0.0};
-    double max_abs_value{0.0};  // max(|a_i|, |b_i|) across all i
+    double max_abs_value{0.0};
     std::size_t count{0};
 };
 
@@ -110,4 +104,4 @@ inline std::ostream& operator<<(std::ostream& os, const ErrorStats& s) {
 
 }  // namespace pscomp_tests
 
-#endif  // PSCOMP_TESTS_PRECISION_ERROR_STATS_HPP
+#endif

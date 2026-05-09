@@ -1,5 +1,4 @@
-// Closed-form regression tests: evaluate composition against power series
-// whose coefficients are known analytically (or by hand calculation).
+// Hand-computed compositions over ModInt998.
 
 #include <gtest/gtest.h>
 
@@ -32,20 +31,17 @@ void expect_equal(const std::vector<ModInt998>& got,
 
 }  // namespace
 
-// f(g(x)) where f = 1 + 2x + 3x^2 and g = x + x^2 expands to 1 + 2x + 5x^2 + 6x^3
-// modulo x^4. Hand-verified.
 TEST(KnownSeriesNTT, Quadratic) {
     auto f        = as_mod({1, 2, 3});
     auto g        = as_mod({0, 1, 1});
     auto expected = as_mod({1, 2, 5, 6});
 
-    for (auto& entry : all_entries<ModInt998>(/*include_naive_def=*/true)) {
+    for (auto& entry : all_entries<ModInt998>(true)) {
         auto out = entry.fn(f, g, expected.size());
         expect_equal(out, expected, entry.name);
     }
 }
 
-// Composition with the identity polynomial yields f truncated to n terms.
 TEST(KnownSeriesNTT, IdentityComposition) {
     auto f = as_mod({7, 3, 11, 1, 9, 4});
     auto g = as_mod({0, 1});
@@ -55,7 +51,6 @@ TEST(KnownSeriesNTT, IdentityComposition) {
     }
 }
 
-// Constant f returns the constant truncated to n.
 TEST(KnownSeriesNTT, ConstantF) {
     auto f = as_mod({42});
     auto g = as_mod({0, 1, 5, 7, 9});
@@ -67,7 +62,6 @@ TEST(KnownSeriesNTT, ConstantF) {
     }
 }
 
-// f(g) where g is purely linear bx => f(bx).
 TEST(KnownSeriesNTT, LinearScale) {
     const ModInt998 b{3u};
     auto f = as_mod({1, 1, 1, 1, 1});
@@ -84,11 +78,9 @@ TEST(KnownSeriesNTT, LinearScale) {
     }
 }
 
-// (1 + x)^k composed with x maps trivially: verify against pre-expanded
-// binomial coefficients for k = 4.
 TEST(KnownSeriesNTT, Binomial) {
-    auto f        = as_mod({1, 4, 6, 4, 1});  // (1 + y)^4
-    auto g        = as_mod({0, 1, 0, 0, 0});  // y -> x
+    auto f        = as_mod({1, 4, 6, 4, 1});
+    auto g        = as_mod({0, 1, 0, 0, 0});
     auto expected = as_mod({1, 4, 6, 4, 1});
     for (auto& entry : all_entries<ModInt998>()) {
         auto out = entry.fn(f, g, expected.size());

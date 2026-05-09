@@ -1,10 +1,4 @@
-// Optimized iterative Cooley-Tukey FFT with cached twiddles, precomputed
-// bit-reverse table, and a packed real-valued transform that runs two real
-// inputs through a single complex FFT.
-//
-// All caches are thread_local and indexed by transform size (number of
-// complex points), so successive calls of the same length pay only the
-// butterfly cost.
+// Iterative Cooley-Tukey FFT with cached twiddles and bit-reverse tables.
 
 #ifndef PSCOMP_TRANSFORM_FFT_HPP
 #define PSCOMP_TRANSFORM_FFT_HPP
@@ -22,6 +16,7 @@
 namespace pscomp::fft {
 
 namespace detail {
+
 template <class Real>
 constexpr Real kPi = static_cast<Real>(3.141592653589793238462643383279502884L);
 
@@ -72,9 +67,9 @@ const std::vector<std::complex<Real>>& twiddles(std::uint32_t n, bool inverse) {
     }
     return v;
 }
+
 }  // namespace detail
 
-// In-place iterative Cooley-Tukey, applies 1/N scaling on inverse.
 template <class Real>
 void transform(span<std::complex<Real>> a, bool inverse) {
     const std::size_t n = a.size();
@@ -106,9 +101,6 @@ void transform(span<std::complex<Real>> a, bool inverse) {
     }
 }
 
-// Polynomial multiplication using FFT. Pads inputs to the next power of two
-// large enough to hold the linear convolution; output length equals
-// a.size() + b.size() - 1.
 template <class Real>
 std::vector<Real> multiply(span<const Real> a, span<const Real> b) {
     if (a.empty() || b.empty()) return {};
@@ -129,9 +121,7 @@ std::vector<Real> multiply(span<const Real> a, span<const Real> b) {
     return out;
 }
 
-// Real-valued FFT trick: pack two real inputs into the real and imaginary
-// parts of a single complex array, run one transform, then split spectra.
-// Returns spectra of `a` and `b` for downstream pointwise multiplication.
+// Two real inputs packed into the real/imag parts of one complex transform.
 template <class Real>
 void packed_real_forward(span<const Real> a, span<const Real> b,
                          std::vector<std::complex<Real>>& spec_a,
@@ -157,4 +147,4 @@ void packed_real_forward(span<const Real> a, span<const Real> b,
 
 }  // namespace pscomp::fft
 
-#endif  // PSCOMP_TRANSFORM_FFT_HPP
+#endif

@@ -1,21 +1,4 @@
-// Brent-Kung composition (1978): O(sqrt(n) * M(n)) polynomial multiplications
-// plus O(n^2) scalar accumulations.
-//
-// Variants:
-//   compose_brent_kung_basic            - textbook implementation, allocates a
-//                                          fresh buffer per truncated mul.
-//   compose_brent_kung_opt              - precomputes all g^k once, runs the
-//                                          block accumulation against a single
-//                                          reusable buffer, performs the outer
-//                                          Horner step also in-place.
-//   compose_brent_kung_streaming        - keeps only the current g^j alive
-//                                          during the F_k(g) accumulation,
-//                                          trading time for O(n) extra memory
-//                                          instead of O(sqrt(n) * n).
-//   compose_brent_kung_tuned_m          - same as _opt but `m` is rounded up
-//                                          to the next power of two so the
-//                                          truncated NTT pad never wastes a
-//                                          full transform stage.
+// Brent-Kung composition (1978): O(sqrt(n) * M(n)) multiplications.
 
 #ifndef PSCOMP_COMPOSE_BRENT_KUNG_HPP
 #define PSCOMP_COMPOSE_BRENT_KUNG_HPP
@@ -25,7 +8,7 @@
 #include <cstddef>
 #include <vector>
 
-#include "pscomp/compose/naive.hpp"  // detail::require_g0_zero
+#include "pscomp/compose/naive.hpp"
 #include "pscomp/field/coef_traits.hpp"
 #include "pscomp/poly/poly_mul.hpp"
 #include "pscomp/poly/poly_utils.hpp"
@@ -117,7 +100,6 @@ std::vector<Coef> compose_brent_kung_opt(span<const Coef> f,
     std::vector<Coef> out(n, coef_zero<Coef>());
     std::vector<Coef> block_buf(n, coef_zero<Coef>());
     for (std::size_t k = blocks; k-- > 0;) {
-        // block_buf := F_k(g) accumulated coefficient-wise.
         std::fill(block_buf.begin(), block_buf.end(), coef_zero<Coef>());
         for (std::size_t j = 0; j < m; ++j) {
             const std::size_t idx = k * m + j;
@@ -171,7 +153,7 @@ std::vector<Coef> compose_brent_kung_streaming(span<const Coef> f,
                 block_value[k][i] = block_value[k][i] + coef * g_j[i];
             }
         }
-        if (j + 1 == m) g_m = g_j;     // remember g^{m-1} for one more multiply
+        if (j + 1 == m) g_m = g_j;
         if (j + 1 < m) {
             g_j = poly::mul_truncated<Coef>(
                 span<const Coef>(g_j.data(),     n),
@@ -241,4 +223,4 @@ std::vector<Coef> compose_brent_kung_tuned_m(span<const Coef> f,
 
 }  // namespace pscomp::algo
 
-#endif  // PSCOMP_COMPOSE_BRENT_KUNG_HPP
+#endif

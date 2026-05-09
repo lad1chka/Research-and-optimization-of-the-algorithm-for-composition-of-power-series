@@ -1,6 +1,4 @@
-// Optimized iterative NTT over 998244353 with cached twiddles, precomputed
-// bit-reverse, Montgomery-reduced multiplication (via ModInt998), and a
-// convolution helper used by every poly_mul backend.
+// Iterative NTT over 998244353 (Montgomery arithmetic via ModInt998).
 
 #ifndef PSCOMP_TRANSFORM_NTT_HPP
 #define PSCOMP_TRANSFORM_NTT_HPP
@@ -108,4 +106,4 @@ inline std::vector<ModInt998> multiply(span<const ModInt998> a,
 
 }  // namespace pscomp::ntt
 
-#endif  // PSCOMP_TRANSFORM_NTT_HPP
+#endif

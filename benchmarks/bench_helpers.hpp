@@ -1,6 +1,4 @@
-// Shared inputs and runner helpers for the pscomp Google Benchmark suite.
-// Keeps the per-binary code compact: the `.cpp` files only register the cases
-// they care about while seeding, sizing and entry-point selection live here.
+// Shared inputs and size lists for the benchmark binaries.
 
 #ifndef PSCOMP_BENCH_HELPERS_HPP
 #define PSCOMP_BENCH_HELPERS_HPP
@@ -52,4 +50,4 @@ inline const std::vector<std::size_t>& fft_sizes() {
 
 }  // namespace pscomp_bench
 
-#endif  // PSCOMP_BENCH_HELPERS_HPP
+#endif

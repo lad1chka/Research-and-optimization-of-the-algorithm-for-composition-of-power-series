@@ -1,6 +1,4 @@
-// Coefficient introspection helpers shared by the polynomial and composition
-// layers. Mostly distinguishes "is this a modular field?" so that the FFT vs
-// NTT backend dispatch can happen at compile time.
+// Compile-time predicates and constants for coefficient types.
 
 #ifndef PSCOMP_FIELD_COEF_TRAITS_HPP
 #define PSCOMP_FIELD_COEF_TRAITS_HPP
@@ -44,4 +42,4 @@ constexpr Coef coef_one() noexcept {
 
 }  // namespace pscomp
 
-#endif  // PSCOMP_FIELD_COEF_TRAITS_HPP
+#endif

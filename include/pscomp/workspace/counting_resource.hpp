@@ -1,6 +1,4 @@
-// Polymorphic memory resource that records every allocation routed through
-// it. Used by the memory benchmarks to attribute byte counts to specific
-// composition variants without instrumenting every call site.
+// std::pmr::memory_resource that totals allocated/live/peak bytes.
 
 #ifndef PSCOMP_WORKSPACE_COUNTING_RESOURCE_HPP
 #define PSCOMP_WORKSPACE_COUNTING_RESOURCE_HPP
@@ -29,7 +27,7 @@ private:
         total_.fetch_add(bytes, std::memory_order_relaxed);
         std::size_t l = live_.fetch_add(bytes, std::memory_order_relaxed) + bytes;
         std::size_t prev = peak_.load(std::memory_order_relaxed);
-        while (l > prev && !peak_.compare_exchange_weak(prev, l)) { /* retry */ }
+        while (l > prev && !peak_.compare_exchange_weak(prev, l)) {}
         return p;
     }
     void do_deallocate(void* p, std::size_t bytes, std::size_t align) override {
@@ -48,4 +46,4 @@ private:
 
 }  // namespace pscomp
 
-#endif  // PSCOMP_WORKSPACE_COUNTING_RESOURCE_HPP
+#endif

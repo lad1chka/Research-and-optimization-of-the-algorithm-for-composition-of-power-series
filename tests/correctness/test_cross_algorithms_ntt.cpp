@@ -1,6 +1,4 @@
-// Pairwise cross-algorithm equality on NTT inputs. Each algorithm must agree
-// bit-for-bit with the naive Horner reference, which encodes the formal power
-// series semantics directly.
+// Cross-check every compose variant against compose_naive_horner on NTT inputs.
 
 #include <gtest/gtest.h>
 
@@ -14,10 +12,10 @@ namespace {
 void compare_against_horner(std::size_t n) {
     std::mt19937 rng(kSeed ^ static_cast<std::uint32_t>(n));
     auto f = random_ntt(n, rng);
-    auto g = random_ntt(n, rng, /*g0_zero=*/true);
+    auto g = random_ntt(n, rng, true);
 
     auto reference = pscomp::algo::compose_naive_horner<ModInt998>(f, g, n);
-    for (auto& entry : all_entries<ModInt998>(/*include_naive_def=*/n <= 32)) {
+    for (auto& entry : all_entries<ModInt998>(n <= 32)) {
         auto out = entry.fn(f, g, n);
         ASSERT_EQ(out.size(), reference.size()) << entry.name << " n=" << n;
         for (std::size_t i = 0; i < n; ++i) {

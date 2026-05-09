@@ -1,10 +1,4 @@
-// Naive composition baselines.
-//
-//   compose_naive_def      - O(n^3) literal sum_j a_j g(x)^j evaluation.
-//   compose_naive_horner   - O(n^2) Horner scheme with mod x^n truncation.
-//   compose_naive_horner_inplace - same complexity but writes into a caller-
-//                                  provided workspace and avoids per-call
-//                                  std::vector allocations.
+// Naive composition baselines (definitional sum and Horner scheme).
 
 #ifndef PSCOMP_COMPOSE_NAIVE_HPP
 #define PSCOMP_COMPOSE_NAIVE_HPP
@@ -43,7 +37,6 @@ std::vector<Coef> compose_naive_def(span<const Coef> f,
     std::vector<Coef> out(n, coef_zero<Coef>());
     if (n == 0 || f.empty()) return out;
 
-    // power = g^0 = 1.
     std::vector<Coef> power(n, coef_zero<Coef>());
     power[0] = coef_one<Coef>();
 
@@ -56,7 +49,6 @@ std::vector<Coef> compose_naive_def(span<const Coef> f,
             for (std::size_t i = 0; i < n; ++i) out[i] = out[i] + aj * power[i];
         }
         if (j + 1 < fn) {
-            // power := power * g_trunc, truncated to n.
             auto next = poly::mul_truncated<Coef>(
                 span<const Coef>(power.data(), power.size()),
                 span<const Coef>(g_trunc.data(), g_trunc.size()), n);
@@ -80,7 +72,7 @@ std::vector<Coef> compose_naive_horner(span<const Coef> f,
     out[0] = f[f.size() - 1];
 
     for (std::size_t k = f.size(); k-- > 0;) {
-        if (k + 1 == f.size()) continue;  // already seeded with leading coef
+        if (k + 1 == f.size()) continue;
         auto prod = poly::mul_truncated<Coef>(
             span<const Coef>(out.data(), out.size()),
             span<const Coef>(g_trunc.data(), g_trunc.size()), n);
@@ -90,8 +82,6 @@ std::vector<Coef> compose_naive_horner(span<const Coef> f,
     return out;
 }
 
-// Workspace-aware variant: caller supplies pre-sized scratch buffer to avoid
-// repeated allocations across many compose calls (used by KL recursion base).
 template <class Coef>
 void compose_naive_horner_inplace(span<const Coef> f,
                                   span<const Coef> g,
@@ -109,7 +99,6 @@ void compose_naive_horner_inplace(span<const Coef> f,
 
     out[0] = f[f.size() - 1];
     for (std::size_t k = f.size() - 1; k-- > 0;) {
-        // scratch := out * g_trunc truncated to n
         auto prod = poly::mul_truncated<Coef>(
             span<const Coef>(out.data(), n),
             span<const Coef>(g_trunc.data(), g_trunc.size()), n);
@@ -120,4 +109,4 @@ void compose_naive_horner_inplace(span<const Coef> f,
 
 }  // namespace pscomp::algo
 
-#endif  // PSCOMP_COMPOSE_NAIVE_HPP
+#endif

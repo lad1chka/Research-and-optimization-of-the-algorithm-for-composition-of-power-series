@@ -1,6 +1,4 @@
-// Small polynomial helpers reused across the composition implementations.
-// Operates on truncated power series semantics: the i-th vector entry is
-// the coefficient at x^i and the trailing zeros are not stripped.
+// Truncated-power-series helpers (resize, truncate, reverse, pow2 round-up).
 
 #ifndef PSCOMP_POLY_POLY_UTILS_HPP
 #define PSCOMP_POLY_POLY_UTILS_HPP
@@ -43,4 +41,4 @@ inline std::size_t round_up_pow2(std::size_t n) noexcept {
 
 }  // namespace pscomp::poly
 
-#endif  // PSCOMP_POLY_POLY_UTILS_HPP
+#endif

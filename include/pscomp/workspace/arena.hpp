@@ -1,8 +1,4 @@
-// Bump arena used by the optimized composition entry points to avoid
-// repeated allocations inside hot recursion / inner loops.
-//
-// Caller owns the underlying buffer; the Arena view tracks the high-water
-// mark and supports cheap reset between independent computations.
+// Bump arena allocator with snapshot/restore.
 
 #ifndef PSCOMP_WORKSPACE_ARENA_HPP
 #define PSCOMP_WORKSPACE_ARENA_HPP
@@ -41,7 +37,6 @@ public:
 
     std::size_t capacity() const noexcept { return storage_.size(); }
 
-    // Snapshot/restore allows nested helpers to leave the arena unchanged.
     struct Marker { std::byte* top; };
     Marker mark() const noexcept { return {top_}; }
     void   release(Marker m) noexcept { assert(m.top <= top_); top_ = m.top; }
@@ -54,4 +49,4 @@ private:
 
 }  // namespace pscomp
 
-#endif  // PSCOMP_WORKSPACE_ARENA_HPP
+#endif

@@ -1,7 +1,4 @@
-// Shared utilities for the pscomp test suite: ModInt construction, random
-// vector generation against a fixed seed, and the listing of every (algorithm,
-// optimization level) entry point that the cross-algorithm checks should
-// validate.
+// Shared test utilities: random inputs and the catalogue of compose entry points.
 
 #ifndef PSCOMP_TESTS_TEST_HELPERS_HPP
 #define PSCOMP_TESTS_TEST_HELPERS_HPP
@@ -37,8 +34,6 @@ std::vector<Real> random_real(std::size_t n, std::mt19937& rng, bool g0_zero = f
     return v;
 }
 
-// Catalog of every NTT compose entry point. Returned by the test fixtures so
-// each suite iterates over the same set without duplicating the list.
 template <class Coef>
 struct ComposeEntry {
     std::string                                                        name;
@@ -75,9 +70,11 @@ inline std::vector<ComposeEntry<Coef>> all_entries(bool include_naive_def = true
         return compose_kl_packed_pq<Coef>(f, g, n); }});
     out.push_back({"kl_threshold",        [](auto f, auto g, std::size_t n) {
         return compose_kl_recursion_threshold<Coef>(f, g, n, 32); }});
+    out.push_back({"kl_tellegen",         [](auto f, auto g, std::size_t n) {
+        return compose_kl_tellegen<Coef>(f, g, n); }});
     return out;
 }
 
 }  // namespace pscomp_tests
 
-#endif  // PSCOMP_TESTS_TEST_HELPERS_HPP
+#endif

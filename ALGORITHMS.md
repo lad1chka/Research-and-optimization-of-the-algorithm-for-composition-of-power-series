@@ -1,20 +1,16 @@
 # ALGORITHMS
 
-This document specifies every algorithm shipped in `pscomp`, together with the
-optimizations that distinguish each `_opt` variant from its `_basic` reference.
-The narrative is meant to be read top-down: notation, finite-field arithmetic,
-fast transforms, polynomial-level primitives, and finally the three families
-of composition algorithms (naive, Brent-Kung, Kinoshita-Li).
+Specification of the algorithms shipped in `pscomp` and the optimizations
+that distinguish the `_opt` variants from their `_basic` references. Sections
+proceed from notation and finite-field arithmetic to fast transforms,
+polynomial primitives, and the three composition families (naive,
+Brent-Kung, Kinoshita-Li).
 
-For brevity we write `n` for the truncation length of every formal power
-series (i.e. we operate in `R[[x]] / (x^n)`), `m` for `deg(f) + 1` (the length
-of the outer series in a composition `f(g(x))`), and `R` for the coefficient
-ring. Throughout, `g(0) = 0` is required so that `f(g(x)) mod x^n` is a well
-defined truncated power series.
+Throughout, `n` is the truncation length (operations are performed in
+`R[[x]] / (x^n)`), `m = deg(f) + 1`, and `R` is the coefficient ring. We
+require `g(0) = 0` so that `f(g(x)) mod x^n` is well defined.
 
-The proof of the Lagrange Inversion Theorem (used to derive certain
-combinatorial identities, e.g. for the compositional inverse) is intentionally
-omitted; we state it as a black box where needed.
+The Lagrange Inversion Theorem is used as a black box where needed.
 
 ---
 
@@ -69,13 +65,12 @@ The constants `R mod P`, `R^2 mod P` and `-P^{-1} mod 2^32` are computed at
 compile time (Newton iteration for the inverse, doubling correct bits each
 step).
 
-### 2.3 Lazy reduction (described, not separately implemented)
+### 2.3 Lazy reduction (described, not implemented)
 
-For tight inner loops one can skip the post-addition normalisation as long as
+In tight inner loops the post-addition normalisation can be deferred while
 intermediate values stay below `2P`. Since `2P < 2^31`, two consecutive
-additions still fit in `uint32_t`, so a single normalisation can be deferred
-until the next multiplication. We document this technique in the NTT section
-but the code performs eager normalisation everywhere.
+additions still fit in `uint32_t`. The current code performs eager
+normalisation everywhere.
 
 ---
 
@@ -97,23 +92,18 @@ it allocates two `N/2`-vectors (`evens`, `odds`), recurses, and combines with
 twiddle factors computed on the fly. Total allocations: `O(N)` across all
 recursion levels; total trig calls: `O(N log N)`.
 
-### 3.2 `fft::transform` (iterative + cache)
+### 3.2 `fft::transform` (iterative, cached)
 
-The optimized variant applies four standard improvements:
+Four standard improvements over §3.1:
 
-* **Iterative form.** A single in-place loop replaces the recursion stack:
-  the input is first permuted by the bit-reversal of its index, then `log N`
-  butterfly stages combine pairs `(a[i], a[i+half])`. No per-call allocations.
-* **Cached bit-reverse table.** A `thread_local std::unordered_map<N, ...>`
-  memoises the permutation; the second call at any size pays only `O(N)` for
-  the swap loop.
-* **Cached twiddles.** `omega_N^j` for `j = 0..N-1` are pre-tabulated per
-  transform size and direction (forward / inverse). Eliminates trig calls
-  from the hot path entirely.
-* **Stride access pattern.** The butterfly uses `tw[j * step]` where
-  `step = N / len`, so a single twiddle table per `N` covers every stage.
+* Iterative form. A single in-place loop replaces the recursion: bit-reverse
+  permute, then `log N` butterfly stages combine pairs `(a[i], a[i+half])`.
+  No per-call allocations.
+* Cached bit-reverse table per `N` (`thread_local`).
+* Cached twiddles `omega_N^j` per transform size and direction.
+* Stride access `tw[j * step]` with `step = N / len` covers every stage.
 
-A scaling pass (`x *= 1/N`) is applied once on inverse transforms.
+The inverse transform applies `x *= 1/N` once at the end.
 
 ### 3.3 Real-valued packed transform
 
@@ -131,12 +121,12 @@ This halves the FFT count when convolving two real sequences (e.g. inside
 
 ### 3.4 Numerical error
 
-Floating-point FFTs accumulate rounding error of order `O(eps * log N)` per
-transform with `eps = 2^{-52}` for `double`, `2^{-63}` for `x86 long double`.
-Since composition repeatedly multiplies and truncates, the per-coefficient
-error grows at least linearly with the depth of the algorithm. We do **not**
-treat any FFT-backed routine as ground truth in tests; instead, we run every
-algorithm on the same input and report deltas against the others (Section 9).
+Each forward/inverse pair accumulates rounding of order `O(eps * log N)` with
+`eps = 2^{-52}` for `double` and `2^{-63}` for x86 `long double`. Composition
+multiplies and truncates repeatedly, so the per-coefficient error grows at
+least linearly with the algorithmic depth. No FFT-backed routine is treated
+as ground truth; tests run every variant on the same input and report deltas
+against the others (§10).
 
 ---
 
@@ -154,10 +144,9 @@ Since `P - 1` is divisible by `2^23`, every `N | 2^23` admits such an
 
 ### 4.1 `ntt_basic::transform` (reference)
 
-Recursive Cooley-Tukey, twiddles generated on the fly via repeated
-multiplication by `omega_N`, multiplications go through `ModInt998Plain`
-(i.e. through hardware division). Used as the *_basic* reference for every
-NTT-backed benchmark.
+Recursive Cooley-Tukey with on-the-fly twiddles and `ModInt998Plain`
+arithmetic (hardware division). Used as the `_basic` reference for NTT
+benchmarks.
 
 ### 4.2 `ntt::transform` (optimized)
 
@@ -223,17 +212,14 @@ result := a_{m-1}
 for k = m - 2 down to 0:
     result := (result * g) mod x^n + a_k
 ```
-Same asymptotic cost as `_def` but in practice slightly faster because every
-multiplication is the same shape `(n) x (n) -> (n)` and the accumulator is
-re-used in place. This is the pscomp reference used as the oracle in the
+Same asymptotic cost as `_def`. Every multiplication has the same shape
+`(n) x (n) -> (n)` and reuses the accumulator. Serves as the oracle in the
 correctness tests.
 
 ### 6.3 `compose_naive_horner_inplace`
 
-Same Horner loop but the accumulator is provided by the caller as an `out`
-span and a re-usable scratch `vector` is passed in. Used as the leaf step
-inside `compose_kl_recursion_threshold` so that small subproblems do not
-each pay a `std::vector` allocation.
+Same loop with caller-owned `out` span and scratch vector. Used as the leaf
+step inside `compose_kl_recursion_threshold` to avoid per-call allocations.
 
 ---
 
@@ -272,23 +258,21 @@ naive `O(n)` scheme.
 
 ### 7.2 Variants
 
-* **`compose_brent_kung_basic`.** Allocates `m_b + 1` power vectors and one
-  vector per block. Uses `poly::mul_truncated` for every multiplication.
-* **`compose_brent_kung_opt`.** Same algorithm, but the per-block accumulator
-  is a single re-used buffer and the outer Horner runs in place. Removes
-  `O(blocks)` `std::vector` allocations.
-* **`compose_brent_kung_streaming`.** Builds `g^j` on the fly, one at a time;
-  each `g^j` contributes to *all* blocks before being discarded. Memory drops
-  from `O(sqrt(n) * n)` for the power table to `O(n)`. Time is unchanged.
-* **`compose_brent_kung_tuned_m`.** Rounds `m_b` up to the next power of two
-  so that the pad to the NTT transform length never wastes a stage. In our
-  benchmarks this consistently shaves 5-20% off the runtime for large `n`.
+* `compose_brent_kung_basic` — allocates `m_b + 1` power vectors and one
+  vector per block; uses `poly::mul_truncated`.
+* `compose_brent_kung_opt` — single reused per-block accumulator, outer
+  Horner runs in place.
+* `compose_brent_kung_streaming` — builds `g^j` one at a time; each `g^j`
+  contributes to all blocks before being discarded. Memory `O(n)` instead
+  of `O(sqrt(n) n)`; time unchanged.
+* `compose_brent_kung_tuned_m` — rounds `m_b` up to the next power of two so
+  the NTT pad does not waste a stage.
 
 ### 7.3 Choice of `m_b`
 
-The default is `ceil(sqrt(n))`. The tuned variant uses the next power of two
-above `ceil(sqrt(n))`. Empirical sweeps (Section 9) confirm both heuristics
-land within 10% of the optimum for `n` in `[2^8, 2^16]`.
+Default `ceil(sqrt(n))`; tuned variant uses the next power of two above
+`ceil(sqrt(n))`. Empirical sweeps (§10) place both heuristics within 10% of
+the optimum for `n in [2^8, 2^16]`.
 
 ---
 
@@ -338,75 +322,130 @@ function bm_y(P, Q, k, n):
 Initialisation: `P[0] = rev(f)`, `P[i] = 0` for `i > 0`; `Q[0] = (1, 0)`,
 `Q[i] = (0, -g[i])` for `i >= 1`. The initial `y`-target is `m - 1`.
 
-We verified this recurrence directly on the closed-form example
-`f = 1 + 2x + 3x^2`, `g = x + x^2`, `n = 4`, recovering
-`f(g(x)) = 1 + 2x + 5x^2 + 6x^3` step by step (see `tests/correctness/
-test_known_series.cpp`).
+The recurrence is checked on `f = 1 + 2x + 3x^2`, `g = x + x^2`, `n = 4`,
+recovering `f(g(x)) = 1 + 2x + 5x^2 + 6x^3`
+(see `tests/correctness/test_known_series.cpp`).
 
-### 8.3 Cost analysis (this implementation)
+### 8.3 Cost (current implementation)
 
-The implementation in `compose_kl_*` truncates everything modulo `x^n` at
-every step. The `y`-degree of `Q` stays `1`, the `y`-degree of `P` halves at
-each step. Per-step bivariate multiplication of `P` (shape `n x m/2^i`) by
-`Qm` (shape `n x 1`) costs `O(n * m / 2^i * log)`. Summed over the
-`O(log m)` steps this gives an `O(n m polylog)` total -- on par with naive
-in the worst case and slightly worse than Brent-Kung on average. The
-`compose_kl_truncated_mul` variant additionally caps `deg_y(P)` at the
-*current* target, halving the constant.
+Every step truncates modulo `x^n`. `deg_y(Q) = 1` is preserved; `deg_y(P)`
+halves. Per step the bivariate multiplication of `P` (shape `n x m/2^i`) by
+`Qm` (shape `n x 1`) costs `O(n * m / 2^i * log)`. Summed over `O(log m)`
+steps the total is `O(n m polylog)`. `compose_kl_truncated_mul` additionally
+caps `deg_y(P)` at the current target.
 
-### 8.4 The optimal `O(n log^2 n)` complexity (Tellegen)
+### 8.4 Dual problem and Tellegen transposition
 
-The asymptotically optimal bound from the Kinoshita-Li paper extracts the
-*dual* coefficient `[x^{n-1}] rev(C)(x) / (1 - y g(x))`, where `C` is an
-arbitrary length-`n` vector. Running bivariate Bostan-Mori in the `x`
-direction shrinks `deg_x` by a factor of two and grows `deg_y(Q)` by a factor
-of two per step, keeping the product `deg_x * deg_y` constant at `O(n)` and
-yielding `O(n log^2 n)` total time.
-
-That algorithm computes the linear map
+For `c \in R^n` define
 
 ```
-T : (c_0, ..., c_{n-1}) |-> ([y^j] sum_k c_k [x^{n-1}] x^{n-1-k} g(x)^j)_{j}
-                          = (sum_k c_k [x^k] g(x)^j)_{j}
-                          = M^T c
+d_j = sum_{k=0..n-1} c_k * [x^k] g(x)^j,   j = 0..m-1.
 ```
 
-where `M[i][j] = [x^i] g(x)^j` is the matrix of the composition map. By
-Tellegen's principle, any algorithm computing `T = M^T` admits a *transposed*
-algorithm of identical cost that computes `M` itself, i.e. composition.
+`d = M^T c`, where `M[i][j] = [x^i] g(x)^j` is the matrix of the composition
+map `f -> f(g)`. By Tellegen's principle, an algorithm computing `M^T c`
+admits a transposed algorithm of identical cost that computes `M f`.
 
-The transposition is mechanical:
-* every polynomial multiplication `X = A * B` (with `B` fixed) becomes a
-  *middle product* `A := middleProduct(B, X)`,
-* every "take even/odd in `x`" becomes "interleave even/odd into a single
-  vector",
-* every additive operation is unchanged (it is its own transpose).
+#### 8.4.1 Forward dual (`extract_dual`)
 
-Implementing the full transposed algorithm is a sizable engineering project
-on its own and is left as future work; the present library implements the
-identity directly (Section 8.2). When we cite "Kinoshita-Li" in benchmarks we
-therefore mean the bivariate Bostan-Mori in the `y` direction, with the
-caveat that the asymptotically optimal variant requires the Tellegen
-transposition.
+The identity `sum_k c_k [x^k] A(x) = [x^{n-1}] rev_n(c)(x) * A(x)` rewrites
+the dual sum as
+
+```
+d(y) = [x^{n-1}] rev_n(c)(x) / (1 - y g(x))   mod y^m.
+```
+
+Bostan-Mori in `x` extracts the `[x^{n-1}]` coefficient. Each step
+
+* multiplies numerator and denominator by `Q(-x, y)` (`negate_odd_x`);
+* contracts the x-axis by 2 (`take_x_parity`).
+
+After `O(log n)` outer iterations only `d(y)` remains. Implementation:
+[include/pscomp/transpose/dual_extraction.hpp](include/pscomp/transpose/dual_extraction.hpp);
+validated against an `O(n^2 m)` oracle in
+[tests/correctness/test_dual_extraction.cpp](tests/correctness/test_dual_extraction.cpp).
+
+#### 8.4.2 Transposed sweep (`compose_kl_tellegen`)
+
+The forward sweep is decomposed into elementary linear operations whose
+transposes are listed in
+[include/pscomp/transpose/DAG_FORWARD_DUAL.md](include/pscomp/transpose/DAG_FORWARD_DUAL.md):
+
+| forward operation                | transpose                                   |
+|----------------------------------|---------------------------------------------|
+| `take_x_parity(U, p)`            | `interleave_x_parity(P', p)`                |
+| `bi_mul_x(P, Qm) mod x^{x_cap}`  | `bi_middle_product_x(Qm, U_t, x_cap)`       |
+| `negate_odd_x(Q)`                | unchanged                                   |
+| pack `rev_n(c)` into `P[*][0]`   | read `P[*][0]`, reverse                     |
+
+`compose_kl_tellegen<Coef>(f, g, n)`
+([include/pscomp/compose/kinoshita_li_tellegen.hpp](include/pscomp/compose/kinoshita_li_tellegen.hpp))
+replays the forward Q sweep via `sweep_forward_g`, walks the level metadata
+in reverse, and at each level applies `interleave_x_parity` followed by
+`bi_middle_product_x` against the precomputed `Qm`. The result is read from
+the `y^0` column of the final bivariate buffer and reversed.
+
+Bit-for-bit agreement with `compose_kl_basic` is checked in
+[tests/correctness/test_compose_kl_tellegen.cpp](tests/correctness/test_compose_kl_tellegen.cpp)
+on `g(x) = x`, `f = e_0`, `f = e_1`, and random inputs up to `n = 64`. The
+variant is also part of the cross-algorithm precision suite via
+`tests/test_helpers.hpp::all_entries`.
+
+#### 8.4.3 Cost (current implementation)
+
+`bi_middle_product_x` runs one univariate middle product per `(jB, jU)`
+y-pair. Total work is `O(n m polylog n)`: each level halves `x_cap`, while
+the Q-tower carries y-extent up to `m`. Reaching `O(n log^2 n)` requires
+either (i) batching all y-pairs into one bivariate transform, or (ii) the
+y-axis Bostan-Mori contraction from the original paper. See §8.6.
+
+#### 8.4.4 API
+
+```cpp
+pscomp::ComposeOptions opts;
+opts.algo       = pscomp::Algorithm::KinoshitaLi;
+opts.kl_variant = pscomp::KLVariant::Tellegen;
+auto out = pscomp::compose<pscomp::ModInt998>(f, g, n, opts);
+```
+
+Default `KLVariant::Forward` keeps the forward Bostan-Mori path.
 
 ### 8.5 Variants
 
-* **`compose_kl_basic`.** Reference implementation. Schoolbook `bi_mul`.
-* **`compose_kl_inplace_bostan_mori`.** Re-uses three `BiPoly` buffers
-  (`Qm`, `U`, `V`) across the loop body to drop the per-iteration allocations.
-* **`compose_kl_arena_workspace`.** Threads a caller-owned `Arena` through the
-  signature so a future zero-allocation rewrite can drop into place without
-  changing callers; today it shares the body with `inplace`.
-* **`compose_kl_truncated_mul`.** Specialises `bi_mul` for `deg_y(Q) = 1`
-  (two truncated `x`-convolutions instead of a full `y`-convolution per
-  `(i_1, i_2)` pair) and caps `deg_y(P)` to the current target after each
-  step.
-* **`compose_kl_packed_pq`.** Same algorithm with a flat row-major storage
-  for `P` and `Q`. The current implementation aliases the truncated variant;
-  the slot is reserved for a future `std::pmr::vector`-backed packed layout.
-* **`compose_kl_recursion_threshold`.** When `n <= naive_threshold`, falls
-  back to `compose_naive_horner_inplace`. Avoids the bivariate setup
-  overhead for the leaf cases that dominate when used as a recursion base.
+* `compose_kl_basic` — reference implementation; schoolbook `bi_mul`.
+* `compose_kl_inplace_bostan_mori` — reuses `Qm`, `U`, `V` across the loop.
+* `compose_kl_arena_workspace` — accepts a caller-owned `Arena` (currently
+  shares the body with `inplace`).
+* `compose_kl_truncated_mul` — specialises `bi_mul` for `deg_y(Q) = 1` (two
+  truncated x-convolutions per `(i_1, i_2)` pair) and caps `deg_y(P)` at
+  the current target.
+* `compose_kl_packed_pq` — placeholder for a flat row-major `P, Q` layout;
+  currently aliases `_truncated_mul`.
+* `compose_kl_recursion_threshold` — falls back to
+  `compose_naive_horner_inplace` for `n <= naive_threshold`.
+* `compose_kl_tellegen` — Tellegen-transposed dual sweep (§8.4). Selected
+  via `KLVariant::Tellegen`. Output bit-for-bit identical to `compose_kl_basic`;
+  current cost `O(n m polylog n)`.
+
+### 8.6 Future work toward `O(n log^2 n)`
+
+Two gaps separate the current `compose_kl_tellegen` from the Kinoshita-Li
+bound:
+
+1. Joint y-axis convolution. `bi_mul_x_truncated` and `bi_middle_product_x`
+   run one univariate transform per y-pair. A single bivariate FFT/NTT
+   (e.g. packing y-rows into a length-`2m` FFT) amortises twiddle and
+   bit-reversal work.
+2. y-axis Bostan-Mori contraction. The original paper pairs the x-axis
+   recursion with a y-axis recursion that keeps `deg_y(Q) = O(1)` after
+   each x-step, restoring `O(n log^2 n)`. This requires a second DAG and
+   its transpose mirroring §8.4 along y.
+
+Until both are implemented, `compose_kl_tellegen` is a correctness milestone:
+it shows that the transposed pipeline (middle product, interleave, level
+replay) reproduces the forward output exactly. Performance crossover with
+`kl_threshold` lies beyond the sizes the current bivariate convolution can
+afford.
 
 ---
 
@@ -422,25 +461,24 @@ transposition.
 | BK    | `_basic`                                | `_opt` (single accumulator), `_streaming` (O(n) memory), `_tuned_m` (power-of-two `m_b`) |
 | KL    | `_basic` (schoolbook bi-mul)            | `_inplace_bostan_mori` (buffer reuse), `_truncated_mul` (deg_y(Q)=1 specialisation),    |
 |       |                                         | `_arena_workspace` (caller arena), `_packed_pq` (flat layout), `_recursion_threshold`   |
+| KL-T  | -                                       | `_tellegen` (DAG transposition via middle product / interleave; §8.4)                   |
 
 ---
 
 ## 10. FFT precision testing methodology
 
-Floating-point composition produces inevitable round-off error. The pscomp
-test suite quantifies it as follows:
+Floating-point composition produces round-off error. The pscomp test suite
+quantifies it as follows:
 
 1. Generate one input pair `(f, g)` of random coefficients in `[-0.5, 0.5]`
    with `g(0) = 0`.
-2. Run *every* composition entry point on this pair. None of them is treated
-   as ground truth.
-3. For every unordered pair of variants compute the per-coefficient
-   absolute deltas; report the distribution as
-   `(min, q10, q25, q50, q75, q90, max, mean, var)`.
-4. Assert that the `max` delta is below an `n`-dependent threshold derived
-   empirically from the typical `eps * log N` growth.
+2. Run every composition entry point on the pair. None is treated as ground
+   truth.
+3. For each unordered pair compute per-coefficient absolute and relative
+   deltas; report `(min, q10, q25, q50, q75, q90, max, mean, var)`.
+4. Assert the relative max is below an `n`-dependent threshold derived from
+   the `eps * log N` growth.
 
-This isolates *relative* numerical disagreement between algorithms, which is
-the right notion of "FFT error" for a composition library: the user does not
-have access to the analytical answer and only cares about consistency
-between fast paths.
+The test isolates pairwise numerical disagreement between algorithms. No
+analytical answer is available in the general case; the relevant property
+is consistency across the fast paths.

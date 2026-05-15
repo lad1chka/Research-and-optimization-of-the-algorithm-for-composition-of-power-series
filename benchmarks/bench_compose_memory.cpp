@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "bench_helpers.hpp"
+#include "pscomp/transpose/dual_extraction.hpp"
 
 using pscomp::ModInt998;
 using namespace pscomp_bench;
@@ -55,17 +56,35 @@ void register_all() {
     reg("mem/naive_horner",        [](auto f, auto g, std::size_t n) {
         return compose_naive_horner<ModInt998>(f, g, n); }, 4096);
     reg("mem/brent_kung_basic",    [](auto f, auto g, std::size_t n) {
-        return compose_brent_kung_basic<ModInt998>(f, g, n); }, 16384);
+        return compose_brent_kung_basic<ModInt998>(f, g, n); }, 65536);
     reg("mem/brent_kung_opt",      [](auto f, auto g, std::size_t n) {
         return compose_brent_kung_opt<ModInt998>(f, g, n); }, 65536);
     reg("mem/brent_kung_streaming",[](auto f, auto g, std::size_t n) {
-        return compose_brent_kung_streaming<ModInt998>(f, g, n); }, 16384);
+        return compose_brent_kung_streaming<ModInt998>(f, g, n); }, 65536);
+    reg("mem/brent_kung_tuned_m",  [](auto f, auto g, std::size_t n) {
+        return compose_brent_kung_tuned_m<ModInt998>(f, g, n); }, 65536);
     reg("mem/kl_basic",            [](auto f, auto g, std::size_t n) {
         return compose_kl_basic<ModInt998>(f, g, n); }, 4096);
     reg("mem/kl_truncated_mul",    [](auto f, auto g, std::size_t n) {
-        return compose_kl_truncated_mul<ModInt998>(f, g, n); }, 16384);
+        return compose_kl_truncated_mul<ModInt998>(f, g, n); }, 65536);
+    reg("mem/kl_threshold",        [](auto f, auto g, std::size_t n) {
+        return compose_kl_recursion_threshold<ModInt998>(f, g, n, 64); }, 65536);
     reg("mem/kl_tellegen",         [](auto f, auto g, std::size_t n) {
         return compose_kl_tellegen<ModInt998>(f, g, n); }, 4096);
+
+    using pscomp::transpose::extract_dual_basic;
+    using pscomp::transpose::extract_dual_inplace;
+    using pscomp::transpose::extract_dual_truncated_mul;
+    using pscomp::transpose::extract_dual_threshold;
+
+    reg("mem/kl_dual_basic",         [](auto f, auto g, std::size_t n) {
+        return extract_dual_basic<ModInt998>(f, g, n, n); }, 65536);
+    reg("mem/kl_dual_inplace",       [](auto f, auto g, std::size_t n) {
+        return extract_dual_inplace<ModInt998>(f, g, n, n); }, 65536);
+    reg("mem/kl_dual_truncated_mul", [](auto f, auto g, std::size_t n) {
+        return extract_dual_truncated_mul<ModInt998>(f, g, n, n); }, 65536);
+    reg("mem/kl_dual_threshold",     [](auto f, auto g, std::size_t n) {
+        return extract_dual_threshold<ModInt998>(f, g, n, n, 64); }, 65536);
 }
 
 }  // namespace

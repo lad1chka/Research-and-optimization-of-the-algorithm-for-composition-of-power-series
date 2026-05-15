@@ -36,17 +36,13 @@ void register_all_ntt() {
             : std::vector<ModInt998>(n);
     });
     add("ntt/brent_kung_basic", [](auto f, auto g, std::size_t n) {
-        return n <= 16384
-            ? compose_brent_kung_basic<ModInt998>(f, g, n)
-            : std::vector<ModInt998>(n);
+        return compose_brent_kung_basic<ModInt998>(f, g, n);
     });
     add("ntt/brent_kung_opt", [](auto f, auto g, std::size_t n) {
         return compose_brent_kung_opt<ModInt998>(f, g, n);
     });
     add("ntt/brent_kung_streaming", [](auto f, auto g, std::size_t n) {
-        return n <= 16384
-            ? compose_brent_kung_streaming<ModInt998>(f, g, n)
-            : std::vector<ModInt998>(n);
+        return compose_brent_kung_streaming<ModInt998>(f, g, n);
     });
     add("ntt/brent_kung_tuned_m", [](auto f, auto g, std::size_t n) {
         return compose_brent_kung_tuned_m<ModInt998>(f, g, n);
@@ -57,14 +53,10 @@ void register_all_ntt() {
             : std::vector<ModInt998>(n);
     });
     add("ntt/kl_truncated_mul", [](auto f, auto g, std::size_t n) {
-        return n <= 16384
-            ? compose_kl_truncated_mul<ModInt998>(f, g, n)
-            : std::vector<ModInt998>(n);
+        return compose_kl_truncated_mul<ModInt998>(f, g, n);
     });
     add("ntt/kl_threshold", [](auto f, auto g, std::size_t n) {
-        return n <= 16384
-            ? compose_kl_recursion_threshold<ModInt998>(f, g, n, 64)
-            : std::vector<ModInt998>(n);
+        return compose_kl_recursion_threshold<ModInt998>(f, g, n, 64);
     });
     add("ntt/kl_tellegen", [](auto f, auto g, std::size_t n) {
         return n <= 4096
@@ -78,24 +70,16 @@ void register_all_ntt() {
     using pscomp::transpose::extract_dual_threshold;
 
     add("ntt/kl_dual_basic", [](auto f, auto g, std::size_t n) {
-        return n <= 16384
-            ? extract_dual_basic<ModInt998>(f, g, n, n)
-            : std::vector<ModInt998>(n);
+        return extract_dual_basic<ModInt998>(f, g, n, n);
     });
     add("ntt/kl_dual_inplace", [](auto f, auto g, std::size_t n) {
-        return n <= 16384
-            ? extract_dual_inplace<ModInt998>(f, g, n, n)
-            : std::vector<ModInt998>(n);
+        return extract_dual_inplace<ModInt998>(f, g, n, n);
     });
     add("ntt/kl_dual_truncated_mul", [](auto f, auto g, std::size_t n) {
-        return n <= 65536
-            ? extract_dual_truncated_mul<ModInt998>(f, g, n, n)
-            : std::vector<ModInt998>(n);
+        return extract_dual_truncated_mul<ModInt998>(f, g, n, n);
     });
     add("ntt/kl_dual_threshold", [](auto f, auto g, std::size_t n) {
-        return n <= 65536
-            ? extract_dual_threshold<ModInt998>(f, g, n, n, 64)
-            : std::vector<ModInt998>(n);
+        return extract_dual_threshold<ModInt998>(f, g, n, n, 64);
     });
 }
 

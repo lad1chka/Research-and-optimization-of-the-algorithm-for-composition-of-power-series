@@ -72,6 +72,8 @@ inline std::vector<ComposeEntry<Coef>> all_entries(bool include_naive_def = true
         return compose_kl_recursion_threshold<Coef>(f, g, n, 32); }});
     out.push_back({"kl_tellegen",         [](auto f, auto g, std::size_t n) {
         return compose_kl_tellegen<Coef>(f, g, n); }});
+    out.push_back({"kl_tellegen_xy",      [](auto f, auto g, std::size_t n) {
+        return compose_kl_tellegen_xy<Coef>(f, g, n); }});
     return out;
 }
 

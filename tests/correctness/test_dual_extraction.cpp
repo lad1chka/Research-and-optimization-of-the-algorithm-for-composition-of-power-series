@@ -13,6 +13,10 @@
 using pscomp::ModInt998;
 using pscomp::span;
 using pscomp::transpose::extract_dual;
+using pscomp::transpose::extract_dual_basic;
+using pscomp::transpose::extract_dual_inplace;
+using pscomp::transpose::extract_dual_truncated_mul;
+using pscomp::transpose::extract_dual_threshold;
 
 namespace {
 
@@ -126,6 +130,79 @@ TEST(ExtractDual, MediumRandomVsBrute) {
                 EXPECT_EQ(got[j].to_uint(), ref[j].to_uint())
                     << "n=" << n << " m=" << m << " j=" << j;
             }
+        }
+    }
+}
+
+TEST(ExtractDualVariants, SmallCrossAgreement) {
+    std::mt19937 rng(pscomp_tests::kSeed ^ 0xBB11u);
+    for (std::size_t n : {std::size_t{2}, std::size_t{3}, std::size_t{4},
+                          std::size_t{6}, std::size_t{8}, std::size_t{16}}) {
+        const std::size_t m = n;
+        auto c = random_mod<ModInt998>(n, rng);
+        auto g = random_mod<ModInt998>(n, rng, true);
+
+        auto sc = span<const ModInt998>(c);
+        auto sg = span<const ModInt998>(g);
+        auto ref  = extract_dual_basic<ModInt998>(sc, sg, n, m);
+        auto inp  = extract_dual_inplace<ModInt998>(sc, sg, n, m);
+        auto tmul = extract_dual_truncated_mul<ModInt998>(sc, sg, n, m);
+        auto thr  = extract_dual_threshold<ModInt998>(sc, sg, n, m, 4);
+
+        ASSERT_EQ(ref.size(), m);
+        for (std::size_t j = 0; j < m; ++j) {
+            EXPECT_EQ(inp[j].to_uint(), ref[j].to_uint())
+                << "inplace: n=" << n << " j=" << j;
+            EXPECT_EQ(tmul[j].to_uint(), ref[j].to_uint())
+                << "truncated_mul: n=" << n << " j=" << j;
+            EXPECT_EQ(thr[j].to_uint(), ref[j].to_uint())
+                << "threshold: n=" << n << " j=" << j;
+        }
+    }
+}
+
+TEST(ExtractDualVariants, MediumCrossAgreement) {
+    std::mt19937 rng(pscomp_tests::kSeed ^ 0xBB22u);
+    for (std::size_t n : {std::size_t{32}, std::size_t{48}, std::size_t{64}}) {
+        const std::size_t m = n;
+        auto c = random_mod<ModInt998>(n, rng);
+        auto g = random_mod<ModInt998>(n, rng, true);
+
+        auto sc = span<const ModInt998>(c);
+        auto sg = span<const ModInt998>(g);
+        auto ref  = extract_dual_basic<ModInt998>(sc, sg, n, m);
+        auto inp  = extract_dual_inplace<ModInt998>(sc, sg, n, m);
+        auto tmul = extract_dual_truncated_mul<ModInt998>(sc, sg, n, m);
+        auto thr  = extract_dual_threshold<ModInt998>(sc, sg, n, m, 16);
+
+        ASSERT_EQ(ref.size(), m);
+        for (std::size_t j = 0; j < m; ++j) {
+            EXPECT_EQ(inp[j].to_uint(), ref[j].to_uint())
+                << "inplace: n=" << n << " j=" << j;
+            EXPECT_EQ(tmul[j].to_uint(), ref[j].to_uint())
+                << "truncated_mul: n=" << n << " j=" << j;
+            EXPECT_EQ(thr[j].to_uint(), ref[j].to_uint())
+                << "threshold: n=" << n << " j=" << j;
+        }
+    }
+}
+
+TEST(ExtractDualVariants, ThresholdFallbackAgreement) {
+    std::mt19937 rng(pscomp_tests::kSeed ^ 0xBB33u);
+    for (std::size_t n : {std::size_t{4}, std::size_t{8}, std::size_t{16},
+                          std::size_t{32}}) {
+        const std::size_t m = n;
+        auto c = random_mod<ModInt998>(n, rng);
+        auto g = random_mod<ModInt998>(n, rng, true);
+
+        auto sc = span<const ModInt998>(c);
+        auto sg = span<const ModInt998>(g);
+        auto ref = extract_dual_basic<ModInt998>(sc, sg, n, m);
+        auto thr = extract_dual_threshold<ModInt998>(sc, sg, n, m, 64);
+
+        for (std::size_t j = 0; j < m; ++j) {
+            EXPECT_EQ(thr[j].to_uint(), ref[j].to_uint())
+                << "threshold(64): n=" << n << " j=" << j;
         }
     }
 }

@@ -10,6 +10,7 @@
 #include "pscomp/compose/brent_kung.hpp"
 #include "pscomp/compose/kinoshita_li.hpp"
 #include "pscomp/compose/kinoshita_li_tellegen.hpp"
+#include "pscomp/compose/kinoshita_li_tellegen_xy.hpp"
 #include "pscomp/compose/naive.hpp"
 #include "pscomp/span.hpp"
 
@@ -29,7 +30,8 @@ enum class OptLevel {
 
 enum class KLVariant {
     Forward,
-    Tellegen
+    Tellegen,
+    TellegenXY
 };
 
 struct ComposeOptions {
@@ -59,6 +61,9 @@ std::vector<Coef> compose(span<const Coef> f,
         case Algorithm::KinoshitaLi:
             if (opts.kl_variant == KLVariant::Tellegen) {
                 return compose_kl_tellegen<Coef>(f, g, n);
+            }
+            if (opts.kl_variant == KLVariant::TellegenXY) {
+                return compose_kl_tellegen_xy<Coef>(f, g, n);
             }
             switch (opts.level) {
                 case OptLevel::Basic:     return compose_kl_basic<Coef>(f, g, n);

@@ -5,6 +5,7 @@
 #include <cstdint>
 
 #include "bench_helpers.hpp"
+#include "pscomp/transpose/dual_extraction.hpp"
 
 using pscomp::ModInt998;
 using namespace pscomp_bench;
@@ -68,6 +69,32 @@ void register_all_ntt() {
     add("ntt/kl_tellegen", [](auto f, auto g, std::size_t n) {
         return n <= 4096
             ? compose_kl_tellegen<ModInt998>(f, g, n)
+            : std::vector<ModInt998>(n);
+    });
+
+    using pscomp::transpose::extract_dual_basic;
+    using pscomp::transpose::extract_dual_inplace;
+    using pscomp::transpose::extract_dual_truncated_mul;
+    using pscomp::transpose::extract_dual_threshold;
+
+    add("ntt/kl_dual_basic", [](auto f, auto g, std::size_t n) {
+        return n <= 16384
+            ? extract_dual_basic<ModInt998>(f, g, n, n)
+            : std::vector<ModInt998>(n);
+    });
+    add("ntt/kl_dual_inplace", [](auto f, auto g, std::size_t n) {
+        return n <= 16384
+            ? extract_dual_inplace<ModInt998>(f, g, n, n)
+            : std::vector<ModInt998>(n);
+    });
+    add("ntt/kl_dual_truncated_mul", [](auto f, auto g, std::size_t n) {
+        return n <= 65536
+            ? extract_dual_truncated_mul<ModInt998>(f, g, n, n)
+            : std::vector<ModInt998>(n);
+    });
+    add("ntt/kl_dual_threshold", [](auto f, auto g, std::size_t n) {
+        return n <= 65536
+            ? extract_dual_threshold<ModInt998>(f, g, n, n, 64)
             : std::vector<ModInt998>(n);
     });
 }

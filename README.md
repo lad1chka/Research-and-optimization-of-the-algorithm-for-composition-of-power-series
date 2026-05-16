@@ -4,6 +4,7 @@ Research and optimization of the power-series composition algorithm.
 Coursework of Vladislav Moskvitin, Applied Data Analysis and AI, 4th year.
 
 Reference:
+
 > Kinoshita, Li. *Power Series Composition in Near-Linear Time*, arXiv:2404.05177, 2024.
 
 Given formal power series `f` and `g` with `g(0) = 0`, the project computes
@@ -14,7 +15,7 @@ each with paired `_basic` and optimized variants, a GoogleTest suite, and a
 Google Benchmark harness.
 
 For derivations and the full optimization list see
-[`docs/ALGORITHMS.md`](docs/ALGORITHMS.md).
+`[docs/ALGORITHMS.md](docs/ALGORITHMS.md)`.
 
 ## Repository layout
 
@@ -49,11 +50,13 @@ cmake --build build -j
 
 Options:
 
-| Option                    | Default | Effect                              |
-|---------------------------|---------|-------------------------------------|
-| `PSCOMP_BUILD_TESTS`      | `ON`    | Build GoogleTest suites.            |
-| `PSCOMP_BUILD_BENCHMARKS` | `ON`    | Build Google Benchmark binaries.    |
+
+| Option                    | Default | Effect                                |
+| ------------------------- | ------- | ------------------------------------- |
+| `PSCOMP_BUILD_TESTS`      | `ON`    | Build GoogleTest suites.              |
+| `PSCOMP_BUILD_BENCHMARKS` | `ON`    | Build Google Benchmark binaries.      |
 | `PSCOMP_NATIVE_ARCH`      | `ON`    | Pass `-march=native` to the compiler. |
+
 
 ## Running the tests
 
@@ -62,17 +65,18 @@ ctest --test-dir build --output-on-failure
 ```
 
 Suites:
-* `test_known_series` — closed-form regressions over `ModInt998`.
-* `test_cross_algorithms_ntt` — every variant matches `compose_naive_horner`
-  on random NTT inputs (n = 16..512).
-* `test_random_ntt_large` — optimized variants cross-checked against
-  `compose_brent_kung_opt` at n = 1024 and 2048.
-* `test_fft_cross_algorithm` — pairwise FFT precision; reports per-pair
-  abs/rel error distribution and asserts a per-`n` threshold.
-* `test_dual_extraction` — `extract_dual_*` variants checked against an
-  `O(n^2 m)` oracle.
-* `test_middle_product`, `test_compose_kl_tellegen`, `test_bi_convolution` —
-  Tellegen pipeline and joint 2D-NTT primitives.
+
+- `test_known_series` — closed-form regressions over `ModInt998`.
+- `test_cross_algorithms_ntt` — every variant matches `compose_naive_horner`
+on random NTT inputs (n = 16..512).
+- `test_random_ntt_large` — optimized variants cross-checked against
+`compose_brent_kung_opt` at n = 1024 and 2048.
+- `test_fft_cross_algorithm` — pairwise FFT precision; reports per-pair
+abs/rel error distribution and asserts a per-`n` threshold.
+- `test_dual_extraction` — `extract_dual_*` variants checked against an
+`O(n^2 m)` oracle.
+- `test_middle_product`, `test_compose_kl_tellegen`, `test_bi_convolution` —
+Tellegen pipeline and joint 2D-NTT primitives.
 
 ## Running the benchmarks
 
@@ -98,10 +102,12 @@ heap usage (`peak_heap_kB`) per algorithm run.
 
 ### Scripts
 
-| Script | Description |
-|--------|-------------|
-| `scripts/capture_precision.py` | Runs `test_fft_cross_algorithm`, parses pairwise `rel_max` / `abs_max` from stdout and writes a CSV. Options: `--test-binary`, `--output`, `--filter`. |
-| `scripts/plot_benchmarks.py` | Reads a CSV and generates heatmap PNGs. Three modes: `time` (Google Benchmark CSV → time heatmap), `memory` (memory CSV → peak arena heatmap), and `precision` (precision CSV → one error heatmap per `n`). Options: `--output-dir`. |
+
+| Script                         | Description                                                                                                                                                                                                                          |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `scripts/capture_precision.py` | Runs `test_fft_cross_algorithm`, parses pairwise `rel_max` / `abs_max` from stdout and writes a CSV. Options: `--test-binary`, `--output`, `--filter`.                                                                               |
+| `scripts/plot_benchmarks.py`   | Reads a CSV and generates heatmap PNGs. Three modes: `time` (Google Benchmark CSV → time heatmap), `memory` (memory CSV → peak arena heatmap), and `precision` (precision CSV → one error heatmap per `n`). Options: `--output-dir`. |
+
 
 ### Generating the figures
 
@@ -146,23 +152,25 @@ directly.
 
 ## Composition complexities
 
-| Algorithm | Time | Memory |
-|-----------|------|--------|
-| `compose_naive_horner` | `O(n^2)` | `O(n)` |
-| `compose_brent_kung_basic` | `O(sqrt(n) M(n))` | `O(n^{1.5})` |
-| `compose_brent_kung_opt` | `O(sqrt(n) M(n))` | `O(n^{1.5})` |
-| `compose_brent_kung_streaming` | `O(sqrt(n) M(n))` | `O(n)` |
-| `compose_brent_kung_tuned_m` | `O(sqrt(n) M(n))` | `O(n^{1.5})` |
-| `compose_kl_truncated_mul` | `O(n^{1.5} polylog n)` | `O(n^{1.5})` |
-| `compose_kl_recursion_threshold` | KL above threshold, naive below | as above |
-| `extract_dual_basic` (KL dual) | `O(n log^2 n)` | `O(n log n)` |
-| `extract_dual_inplace` (KL dual) | `O(n log^2 n)` | `O(n log n)` |
-| **`extract_dual_truncated_mul`** (KL dual) | **`O(n log^2 n)`** | `O(n log n)` |
-| `extract_dual_threshold` (KL dual) | brute fallback + `_truncated_mul` | `O(n log n)` |
+
+| Algorithm                                  | Time                              | Memory       |
+| ------------------------------------------ | --------------------------------- | ------------ |
+| `compose_naive_horner`                     | `O(n^2)`                          | `O(n)`       |
+| `compose_brent_kung_basic`                 | `O(sqrt(n) M(n))`                 | `O(n^{1.5})` |
+| `compose_brent_kung_opt`                   | `O(sqrt(n) M(n))`                 | `O(n^{1.5})` |
+| `compose_brent_kung_streaming`             | `O(sqrt(n) M(n))`                 | `O(n)`       |
+| `compose_brent_kung_tuned_m`               | `O(sqrt(n) M(n))`                 | `O(n^{1.5})` |
+| `compose_kl_truncated_mul`                 | `O(n^{1.5} polylog n)`            | `O(n^{1.5})` |
+| `compose_kl_recursion_threshold`           | KL above threshold, naive below   | as above     |
+| `extract_dual_basic` (KL dual)             | `O(n log^2 n)`                    | `O(n log n)` |
+| `extract_dual_inplace` (KL dual)           | `O(n log^2 n)`                    | `O(n log n)` |
+| `**extract_dual_truncated_mul**` (KL dual) | `**O(n log^2 n)**`                | `O(n log n)` |
+| `extract_dual_threshold` (KL dual)         | brute fallback + `_truncated_mul` | `O(n log n)` |
+
 
 `M(n) = O(n log n)` via NTT.  The `extract_dual_*` family implements the
 Kinoshita-Li algorithm via x-axis Bostan-Mori with tight 2D NTT sizing (see
-[`docs/ALGORITHMS.md` §8.6](docs/ALGORITHMS.md)).
+`[docs/ALGORITHMS.md` §8.6](docs/ALGORITHMS.md)).
 
 ## CI
 

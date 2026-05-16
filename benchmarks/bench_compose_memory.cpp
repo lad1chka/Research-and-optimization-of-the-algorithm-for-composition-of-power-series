@@ -1,29 +1,18 @@
-// Memory benchmarks: bytes routed through CountingResource and peak RSS.
+// Memory benchmarks: peak heap usage via global operator new/delete override.
 
 #include <benchmark/benchmark.h>
-#include <sys/resource.h>
 
-#include <algorithm>
-#include <memory_resource>
 #include <vector>
 
 #include "bench_helpers.hpp"
+#include "pscomp/workspace/heap_tracker.hpp"
 #include "pscomp/transpose/dual_extraction.hpp"
 
 using pscomp::ModInt998;
+using pscomp::HeapTracker;
 using namespace pscomp_bench;
 
 namespace {
-
-std::size_t peak_rss_kb() {
-    rusage ru{};
-    if (getrusage(RUSAGE_SELF, &ru) != 0) return 0;
-#if defined(__APPLE__)
-    return static_cast<std::size_t>(ru.ru_maxrss / 1024);
-#else
-    return static_cast<std::size_t>(ru.ru_maxrss);
-#endif
-}
 
 void register_all() {
     using namespace pscomp::algo;
@@ -34,21 +23,16 @@ void register_all() {
                 const std::size_t nn = static_cast<std::size_t>(s.range(0));
                 auto f = make_random_ntt(nn, false, 5u);
                 auto g = make_random_ntt(nn, true,  6u);
-                std::pmr::memory_resource* prev = std::pmr::get_default_resource();
-                pscomp::CountingResource counter;
-                std::pmr::set_default_resource(&counter);
-                const std::size_t rss_before = peak_rss_kb();
                 for (auto _ : s) {
-                    counter.reset();
+                    HeapTracker::active = true;
+                    HeapTracker::reset();
                     auto out = fn(pscomp::span<const ModInt998>(f),
                                   pscomp::span<const ModInt998>(g), nn);
                     benchmark::DoNotOptimize(out);
+                    HeapTracker::active = false;
                 }
-                const std::size_t rss_after = peak_rss_kb();
-                s.counters["bytes_alloc"]   = static_cast<double>(counter.bytes_allocated());
-                s.counters["peak_arena_kB"] = static_cast<double>(counter.high_watermark()) / 1024.0;
-                s.counters["peak_rss_kB"]   = static_cast<double>(std::max(rss_before, rss_after));
-                std::pmr::set_default_resource(prev);
+                s.counters["peak_heap_kB"] =
+                    static_cast<double>(HeapTracker::peak) / 1024.0;
             })->Arg(static_cast<int>(n))->Unit(benchmark::kMillisecond);
         }
     };

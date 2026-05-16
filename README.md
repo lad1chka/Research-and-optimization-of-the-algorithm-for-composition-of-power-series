@@ -93,8 +93,8 @@ mkdir -p results
 python scripts/capture_precision.py --output results/precision.csv
 ```
 
-The memory benchmark reports library allocations (via `pscomp::CountingResource`
-plugged into the `std::pmr` default) and process peak RSS (`getrusage`).
+The memory benchmark overrides global `operator new`/`delete` to track peak
+heap usage (`peak_heap_kB`) per algorithm run.
 
 ### Scripts
 

@@ -1,6 +1,6 @@
 {
   "context": {
-    "date": "2026-05-15T23:40:19+03:00",
+    "date": "2026-05-16T13:09:28+03:00",
     "host_name": "macbook-air-lad1chka.tail05519f.ts.net",
     "executable": "./build/benchmarks/bench_compose_memory",
     "num_cpus": 10,
@@ -26,7 +26,7 @@
         "num_sharing": 1
       }
     ],
-    "load_avg": [2.41602,2.31787,2.26123],
+    "load_avg": [4.01367,2.58203,2.27588],
     "library_build_type": "release"
   },
   "benchmarks": [
@@ -39,13 +39,11 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 309,
-      "real_time": 2.2449548292941262e+00,
-      "cpu_time": 2.2429061488673145e+00,
+      "iterations": 323,
+      "real_time": 2.1683651948168920e+00,
+      "cpu_time": 2.1656130030959750e+00,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.2720000000000000e+03
+      "peak_heap_kB": 7.0000000000000000e+00
     },
     {
       "name": "mem/naive_horner/1024",
@@ -57,12 +55,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 17,
-      "real_time": 4.1603247525499150e+01,
-      "cpu_time": 4.1561823529411775e+01,
+      "real_time": 4.1232519673512265e+01,
+      "cpu_time": 4.1038941176470601e+01,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.3680000000000000e+03
+      "peak_heap_kB": 2.8000000000000000e+01
     },
     {
       "name": "mem/naive_horner/4096",
@@ -74,12 +70,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 7.6550933346152306e+02,
-      "cpu_time": 7.6481299999999976e+02,
+      "real_time": 7.5129658449441195e+02,
+      "cpu_time": 7.5045000000000027e+02,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.6080000000000000e+03
+      "peak_heap_kB": 2.0821093750000000e+02
     },
     {
       "name": "mem/brent_kung_basic/256",
@@ -90,13 +84,11 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 2371,
-      "real_time": 2.9552506007181850e-01,
-      "cpu_time": 2.9527962884858716e-01,
+      "iterations": 2462,
+      "real_time": 2.8732172413982576e-01,
+      "cpu_time": 2.8701015434606009e-01,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.7520000000000000e+03
+      "peak_heap_kB": 5.3773437500000000e+01
     },
     {
       "name": "mem/brent_kung_basic/1024",
@@ -107,13 +99,11 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 232,
-      "real_time": 3.0501099134763252e+00,
-      "cpu_time": 3.0446336206896563e+00,
+      "iterations": 241,
+      "real_time": 3.0404567772607587e+00,
+      "cpu_time": 3.0095435684647298e+00,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 3.2640000000000000e+03
+      "peak_heap_kB": 4.0552343750000000e+02
     },
     {
       "name": "mem/brent_kung_basic/4096",
@@ -124,13 +114,11 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 22,
-      "real_time": 3.2667265146632083e+01,
-      "cpu_time": 3.2464727272727259e+01,
+      "iterations": 23,
+      "real_time": 3.0821527151957802e+01,
+      "cpu_time": 3.0794739130434788e+01,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.4320000000000000e+03
+      "peak_heap_kB": 3.1550234375000000e+03
     },
     {
       "name": "mem/brent_kung_basic/16384",
@@ -142,12 +130,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 2,
-      "real_time": 3.5010714642703533e+02,
-      "cpu_time": 3.4974749999999943e+02,
+      "real_time": 3.3578520826995373e+02,
+      "cpu_time": 3.3557399999999939e+02,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 3.5248000000000000e+04
+      "peak_heap_kB": 2.4902023437500000e+04
     },
     {
       "name": "mem/brent_kung_basic/65536",
@@ -159,12 +145,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 4.4094327921047807e+03,
-      "cpu_time": 4.4050899999999992e+03,
+      "real_time": 4.3085834588855505e+03,
+      "cpu_time": 4.3045540000000001e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0796800000000000e+05
+      "peak_heap_kB": 1.9943616406250000e+05
     },
     {
       "name": "mem/brent_kung_opt/256",
@@ -175,13 +159,11 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 2376,
-      "real_time": 2.9474672052369577e-01,
-      "cpu_time": 2.9451346801346728e-01,
+      "iterations": 2410,
+      "real_time": 2.9149324018740058e-01,
+      "cpu_time": 2.9122199170124502e-01,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0800000000000000e+05
+      "peak_heap_kB": 3.9398437500000000e+01
     },
     {
       "name": "mem/brent_kung_opt/1024",
@@ -192,13 +174,11 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 226,
-      "real_time": 3.0394675523306418e+00,
-      "cpu_time": 3.0371460176991194e+00,
+      "iterations": 238,
+      "real_time": 2.9568291277069005e+00,
+      "cpu_time": 2.9541176470588231e+00,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0801600000000000e+05
+      "peak_heap_kB": 2.8477343750000000e+02
     },
     {
       "name": "mem/brent_kung_opt/4096",
@@ -209,13 +189,11 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 22,
-      "real_time": 3.1392001927914944e+01,
-      "cpu_time": 3.1353590909090894e+01,
+      "iterations": 23,
+      "real_time": 3.0837786262450010e+01,
+      "cpu_time": 3.0806347826087038e+01,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0806400000000000e+05
+      "peak_heap_kB": 2.1615234375000000e+03
     },
     {
       "name": "mem/brent_kung_opt/16384",
@@ -227,12 +205,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 2,
-      "real_time": 3.4286285378038883e+02,
-      "cpu_time": 3.4252499999999930e+02,
+      "real_time": 3.3618835406377912e+02,
+      "cpu_time": 3.3599199999999831e+02,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0808000000000000e+05
+      "peak_heap_kB": 1.6835023437500000e+04
     },
     {
       "name": "mem/brent_kung_opt/65536",
@@ -244,12 +220,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 4.3978068325668573e+03,
-      "cpu_time": 4.3932869999999975e+03,
+      "real_time": 4.3588226661086082e+03,
+      "cpu_time": 4.3435360000000001e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0808000000000000e+05
+      "peak_heap_kB": 1.3287002343750000e+05
     },
     {
       "name": "mem/brent_kung_streaming/256",
@@ -260,13 +234,11 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 2299,
-      "real_time": 3.0486620946415821e-01,
-      "cpu_time": 3.0456633318834292e-01,
+      "iterations": 2072,
+      "real_time": 3.4775975309528095e-01,
+      "cpu_time": 3.2899758687258662e-01,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0808000000000000e+05
+      "peak_heap_kB": 2.6375000000000000e+01
     },
     {
       "name": "mem/brent_kung_streaming/1024",
@@ -277,13 +249,11 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 229,
-      "real_time": 3.0614073839705584e+00,
-      "cpu_time": 3.0596375545851355e+00,
+      "iterations": 208,
+      "real_time": 3.1292530072208207e+00,
+      "cpu_time": 3.1144663461538569e+00,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0808000000000000e+05
+      "peak_heap_kB": 1.6875000000000000e+02
     },
     {
       "name": "mem/brent_kung_streaming/4096",
@@ -295,12 +265,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 22,
-      "real_time": 3.1601117458194494e+01,
-      "cpu_time": 3.1570863636363391e+01,
+      "real_time": 3.1510920475491069e+01,
+      "cpu_time": 3.1478409090909086e+01,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0811200000000000e+05
+      "peak_heap_kB": 1.1855000000000000e+03
     },
     {
       "name": "mem/brent_kung_streaming/16384",
@@ -312,12 +280,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 2,
-      "real_time": 3.4543599979951978e+02,
-      "cpu_time": 3.4509800000000013e+02,
+      "real_time": 3.4032627008855343e+02,
+      "cpu_time": 3.3996850000000120e+02,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0811200000000000e+05
+      "peak_heap_kB": 8.8350000000000000e+03
     },
     {
       "name": "mem/brent_kung_streaming/65536",
@@ -329,12 +295,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 4.3861221671104431e+03,
-      "cpu_time": 4.3818909999999996e+03,
+      "real_time": 4.4119602078571916e+03,
+      "cpu_time": 4.3984440000000013e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0865600000000000e+05
+      "peak_heap_kB": 6.8102000000000000e+04
     },
     {
       "name": "mem/brent_kung_tuned_m/256",
@@ -345,13 +309,11 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 2366,
-      "real_time": 2.9582206265322253e-01,
-      "cpu_time": 2.9547802197802148e-01,
+      "iterations": 2384,
+      "real_time": 3.0376041626820227e-01,
+      "cpu_time": 3.0049748322147501e-01,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0867200000000000e+05
+      "peak_heap_kB": 3.9398437500000000e+01
     },
     {
       "name": "mem/brent_kung_tuned_m/1024",
@@ -362,13 +324,11 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 232,
-      "real_time": 3.0183900862225683e+00,
-      "cpu_time": 3.0159396551724047e+00,
+      "iterations": 233,
+      "real_time": 3.0083910925833450e+00,
+      "cpu_time": 3.0040944206008660e+00,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0868800000000000e+05
+      "peak_heap_kB": 2.8477343750000000e+02
     },
     {
       "name": "mem/brent_kung_tuned_m/4096",
@@ -379,13 +339,11 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 22,
-      "real_time": 3.1365215905349363e+01,
-      "cpu_time": 3.1331954545454654e+01,
+      "iterations": 23,
+      "real_time": 3.1279222796792570e+01,
+      "cpu_time": 3.1242826086956253e+01,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0870400000000000e+05
+      "peak_heap_kB": 2.1615234375000000e+03
     },
     {
       "name": "mem/brent_kung_tuned_m/16384",
@@ -397,12 +355,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 2,
-      "real_time": 3.4303545765578747e+02,
-      "cpu_time": 3.4268949999999876e+02,
+      "real_time": 3.3979137474671006e+02,
+      "cpu_time": 3.3946200000000101e+02,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0872000000000000e+05
+      "peak_heap_kB": 1.6835023437500000e+04
     },
     {
       "name": "mem/brent_kung_tuned_m/65536",
@@ -414,12 +370,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 4.3911187080666423e+03,
-      "cpu_time": 4.3866250000000018e+03,
+      "real_time": 4.3608668334782124e+03,
+      "cpu_time": 4.3559299999999939e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0873600000000000e+05
+      "peak_heap_kB": 1.3287002343750000e+05
     },
     {
       "name": "mem/kl_basic/256",
@@ -431,12 +385,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 64,
-      "real_time": 1.0995302727678791e+01,
-      "cpu_time": 1.0985078124999937e+01,
+      "real_time": 1.1178041007951833e+01,
+      "cpu_time": 1.1159265625000025e+01,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.0979200000000000e+05
+      "peak_heap_kB": 4.3000000000000000e+02
     },
     {
       "name": "mem/kl_basic/1024",
@@ -448,12 +400,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 6.5211129095405340e+02,
-      "cpu_time": 6.5131499999999676e+02,
+      "real_time": 6.6380737535655499e+02,
+      "cpu_time": 6.6185199999999611e+02,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.2382400000000000e+05
+      "peak_heap_kB": 6.3280000000000000e+03
     },
     {
       "name": "mem/kl_basic/4096",
@@ -465,12 +415,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 4.3366165041923523e+04,
-      "cpu_time": 4.2959678000000007e+04,
+      "real_time": 4.1025785541161895e+04,
+      "cpu_time": 4.0976009000000013e+04,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 3.8846400000000000e+05
+      "peak_heap_kB": 9.9040000000000000e+04
     },
     {
       "name": "mem/kl_truncated_mul/256",
@@ -482,12 +430,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 72,
-      "real_time": 9.7523194401421485e+00,
-      "cpu_time": 9.7474305555557024e+00,
+      "real_time": 9.7307667860554332e+00,
+      "cpu_time": 9.7198194444444326e+00,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 3.8846400000000000e+05
+      "peak_heap_kB": 5.6600000000000000e+02
     },
     {
       "name": "mem/kl_truncated_mul/1024",
@@ -499,12 +445,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 4,
-      "real_time": 1.7807430215179920e+02,
-      "cpu_time": 1.7769600000000096e+02,
+      "real_time": 1.7789469799026847e+02,
+      "cpu_time": 1.7762324999999990e+02,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 3.8846400000000000e+05
+      "peak_heap_kB": 8.4080000000000000e+03
     },
     {
       "name": "mem/kl_truncated_mul/4096",
@@ -516,12 +460,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 3.3169569578021765e+03,
-      "cpu_time": 3.3083699999999963e+03,
+      "real_time": 3.2974379993975163e+03,
+      "cpu_time": 3.2941490000000044e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 3.8846400000000000e+05
+      "peak_heap_kB": 1.3193600000000000e+05
     },
     {
       "name": "mem/kl_truncated_mul/16384",
@@ -533,12 +475,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 6.2827387584373355e+04,
-      "cpu_time": 6.2098007000000012e+04,
+      "real_time": 6.2737504458054900e+04,
+      "cpu_time": 6.1858939999999988e+04,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 2.8318240000000000e+06
+      "peak_heap_kB": 2.1006080000000000e+06
     },
     {
       "name": "mem/kl_truncated_mul/65536",
@@ -550,12 +490,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 1.8446192712504417e+06,
-      "cpu_time": 1.3963289010000001e+06,
+      "real_time": 2.2701483826665208e+06,
+      "cpu_time": 1.5091308570000001e+06,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 4.7612000000000000e+06
+      "peak_heap_kB": 3.3568256000000000e+07
     },
     {
       "name": "mem/kl_threshold/256",
@@ -566,13 +504,11 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 71,
-      "real_time": 9.7449014068279460e+00,
-      "cpu_time": 9.7372112676035147e+00,
+      "iterations": 70,
+      "real_time": 1.0236229175435644e+01,
+      "cpu_time": 1.0157871428571395e+01,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 4.7612000000000000e+06
+      "peak_heap_kB": 5.6600000000000000e+02
     },
     {
       "name": "mem/kl_threshold/1024",
@@ -584,12 +520,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 4,
-      "real_time": 1.7735393741168082e+02,
-      "cpu_time": 1.7715750000002117e+02,
+      "real_time": 1.8602003133855760e+02,
+      "cpu_time": 1.8470925000002580e+02,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 4.7612000000000000e+06
+      "peak_heap_kB": 8.4080000000000000e+03
     },
     {
       "name": "mem/kl_threshold/4096",
@@ -601,12 +535,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 3.2884527072310448e+03,
-      "cpu_time": 3.2790869999998904e+03,
+      "real_time": 3.4116365825757384e+03,
+      "cpu_time": 3.3604630000002089e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 4.7612000000000000e+06
+      "peak_heap_kB": 1.3193600000000000e+05
     },
     {
       "name": "mem/kl_threshold/16384",
@@ -618,12 +550,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 6.1767599958926439e+04,
-      "cpu_time": 6.1336362000000008e+04,
+      "real_time": 6.3242636124603450e+04,
+      "cpu_time": 6.2615007000000107e+04,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 2.1006080000000000e+06
     },
     {
       "name": "mem/kl_threshold/65536",
@@ -635,12 +565,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 1.8133586547914892e+06,
-      "cpu_time": 1.3927232730000000e+06,
+      "real_time": 2.2874502802910283e+06,
+      "cpu_time": 1.5184378869999999e+06,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 3.3568256000000000e+07
     },
     {
       "name": "mem/kl_tellegen/256",
@@ -652,12 +580,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 15,
-      "real_time": 4.7793833352625370e+01,
-      "cpu_time": 4.7740000000006454e+01,
+      "real_time": 4.7851611115038395e+01,
+      "cpu_time": 4.7809666666671546e+01,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 5.7245312500000000e+02
     },
     {
       "name": "mem/kl_tellegen/1024",
@@ -669,12 +595,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 9.6492137480527163e+02,
-      "cpu_time": 9.6003999999993539e+02,
+      "real_time": 9.7367970831692219e+02,
+      "cpu_time": 9.6969499999977415e+02,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 6.9949156250000000e+04
     },
     {
       "name": "mem/kl_tellegen/4096",
@@ -686,12 +610,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 1.8740680417045951e+04,
-      "cpu_time": 1.8714808000000176e+04,
+      "real_time": 1.8659965000115335e+04,
+      "cpu_time": 1.8611083000000235e+04,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 1.1154411562500000e+06
     },
     {
       "name": "mem/kl_dual_basic/256",
@@ -703,12 +625,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 1.4397806255146861e+03,
-      "cpu_time": 1.4378759999999602e+03,
+      "real_time": 1.3397466670721769e+03,
+      "cpu_time": 1.3383669999998347e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 6.3453125000000000e+01
     },
     {
       "name": "mem/kl_dual_basic/1024",
@@ -720,12 +640,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 1.8025459172204137e+03,
-      "cpu_time": 1.8004070000001775e+03,
+      "real_time": 1.6731835408136249e+03,
+      "cpu_time": 1.6717260000000351e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 2.6901562500000000e+02
     },
     {
       "name": "mem/kl_dual_basic/4096",
@@ -737,12 +655,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 2.1877028336748481e+03,
-      "cpu_time": 2.1852779999999257e+03,
+      "real_time": 2.0506221251562238e+03,
+      "cpu_time": 2.0482539999998153e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 1.1370156250000000e+03
     },
     {
       "name": "mem/kl_dual_basic/16384",
@@ -754,12 +670,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 2.7090083751827478e+03,
-      "cpu_time": 2.7012930000000779e+03,
+      "real_time": 2.5112954173237085e+03,
+      "cpu_time": 2.5047329999997601e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 4.8650156250000000e+03
     },
     {
       "name": "mem/kl_dual_basic/65536",
@@ -771,12 +685,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 3.7203449578955770e+03,
-      "cpu_time": 3.7125750000000153e+03,
+      "real_time": 3.5127343330532312e+03,
+      "cpu_time": 3.5066729999998643e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 2.1377156250000000e+04
     },
     {
       "name": "mem/kl_dual_inplace/256",
@@ -788,12 +700,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 1.4399752924218774e+03,
-      "cpu_time": 1.4373949999994693e+03,
+      "real_time": 1.3361350828781724e+03,
+      "cpu_time": 1.3347170000001825e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 4.1500000000000000e+01
     },
     {
       "name": "mem/kl_dual_inplace/1024",
@@ -805,12 +715,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 1.8537922501564026e+03,
-      "cpu_time": 1.8245789999996305e+03,
+      "real_time": 1.7687654169276357e+03,
+      "cpu_time": 1.7485920000003716e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 1.6600000000000000e+02
     },
     {
       "name": "mem/kl_dual_inplace/4096",
@@ -822,12 +730,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 2.1872428329661489e+03,
-      "cpu_time": 2.1847999999999956e+03,
+      "real_time": 2.0917508751153946e+03,
+      "cpu_time": 2.0670650000001842e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 6.6400000000000000e+02
     },
     {
       "name": "mem/kl_dual_inplace/16384",
@@ -839,12 +745,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 2.6789351245388389e+03,
-      "cpu_time": 2.6763719999999012e+03,
+      "real_time": 2.5772460000589490e+03,
+      "cpu_time": 2.5581270000002405e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 2.6560000000000000e+03
     },
     {
       "name": "mem/kl_dual_inplace/65536",
@@ -856,12 +760,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 3.7071907920762897e+03,
-      "cpu_time": 3.7031399999996211e+03,
+      "real_time": 3.5396323753520846e+03,
+      "cpu_time": 3.5295330000003560e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 1.0624000000000000e+04
     },
     {
       "name": "mem/kl_dual_truncated_mul/256",
@@ -873,12 +775,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 1.4387488327920437e+03,
-      "cpu_time": 1.4371879999998782e+03,
+      "real_time": 1.3371236249804497e+03,
+      "cpu_time": 1.3358060000000478e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 6.3453125000000000e+01
     },
     {
       "name": "mem/kl_dual_truncated_mul/1024",
@@ -890,12 +790,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 1.8071072921156883e+03,
-      "cpu_time": 1.8047179999998662e+03,
+      "real_time": 1.6977770421653986e+03,
+      "cpu_time": 1.6928040000002511e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 2.6901562500000000e+02
     },
     {
       "name": "mem/kl_dual_truncated_mul/4096",
@@ -907,12 +805,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 2.1862723343074322e+03,
-      "cpu_time": 2.1839949999998680e+03,
+      "real_time": 2.0705645000562072e+03,
+      "cpu_time": 2.0621209999999337e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 1.1370156250000000e+03
     },
     {
       "name": "mem/kl_dual_truncated_mul/16384",
@@ -924,12 +820,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 2.6963572921231389e+03,
-      "cpu_time": 2.6928909999996904e+03,
+      "real_time": 2.5184421250596642e+03,
+      "cpu_time": 2.5152939999998125e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 4.8010156250000000e+03
     },
     {
       "name": "mem/kl_dual_truncated_mul/65536",
@@ -941,12 +835,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 3.7118790000677109e+03,
-      "cpu_time": 3.7080679999999120e+03,
+      "real_time": 3.5151181248947978e+03,
+      "cpu_time": 3.5116399999997157e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 2.0225015625000000e+04
     },
     {
       "name": "mem/kl_dual_threshold/256",
@@ -958,12 +850,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 1.4381017088890076e+03,
-      "cpu_time": 1.4366479999998774e+03,
+      "real_time": 1.3401011247187853e+03,
+      "cpu_time": 1.3386089999999058e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 6.3453125000000000e+01
     },
     {
       "name": "mem/kl_dual_threshold/1024",
@@ -975,12 +865,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 1.8005591249093413e+03,
-      "cpu_time": 1.7988740000005237e+03,
+      "real_time": 1.6840542089194059e+03,
+      "cpu_time": 1.6825800000001436e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 2.6901562500000000e+02
     },
     {
       "name": "mem/kl_dual_threshold/4096",
@@ -992,12 +880,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 2.1940045412629843e+03,
-      "cpu_time": 2.1916180000002896e+03,
+      "real_time": 2.0449283327907324e+03,
+      "cpu_time": 2.0423580000001493e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 1.1370156250000000e+03
     },
     {
       "name": "mem/kl_dual_threshold/16384",
@@ -1009,12 +895,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 2.6799205001443624e+03,
-      "cpu_time": 2.6771359999997912e+03,
+      "real_time": 2.5037066657096148e+03,
+      "cpu_time": 2.5011189999995622e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 4.8010156250000000e+03
     },
     {
       "name": "mem/kl_dual_threshold/65536",
@@ -1026,12 +910,10 @@
       "repetition_index": 0,
       "threads": 1,
       "iterations": 1,
-      "real_time": 3.7134157083928585e+03,
-      "cpu_time": 3.7093249999998079e+03,
+      "real_time": 3.5194115415215492e+03,
+      "cpu_time": 3.5157920000001468e+03,
       "time_unit": "ms",
-      "bytes_alloc": 0.0000000000000000e+00,
-      "peak_arena_kB": 0.0000000000000000e+00,
-      "peak_rss_kB": 6.0053120000000000e+06
+      "peak_heap_kB": 2.0225015625000000e+04
     }
   ]
 }

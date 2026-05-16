@@ -234,7 +234,7 @@ def _parse_memory_json(path: str) -> Dict[str, Dict[int, float]]:
             n = int(n_str)
         except ValueError:
             continue
-        kb = bm.get("peak_rss_kB", 0.0)
+        kb = bm.get("peak_heap_kB", 0.0)
         mb = kb / 1024.0
         if mb <= 0:
             continue
@@ -258,7 +258,7 @@ def _parse_memory_csv_text(path: str) -> Dict[str, Dict[int, float]]:
     cols = lines[header_idx].strip().split(",")
     name_col = cols.index("name")
     rss_col = None
-    for cand in ("peak_rss_kB",):
+    for cand in ("peak_heap_kB",):
         if cand in cols:
             rss_col = cols.index(cand)
             break
@@ -355,7 +355,7 @@ def plot_memory_heatmap(data: Dict[str, Dict[int, float]], out_dir: str) -> None
     ax.set_yticks(range(len(all_variants)))
     ax.set_yticklabels(row_labels, fontsize=8)
     ax.set_xlabel("n", fontsize=11)
-    ax.set_title("Peak RSS (MB) \u2014 all variants \u00d7 sizes", fontsize=12)
+    ax.set_title("Peak heap (MB) \u2014 all variants \u00d7 sizes", fontsize=12)
 
     cbar = fig.colorbar(im, ax=ax, shrink=0.8)
     cbar.set_label("log\u2081\u2080(MB)", fontsize=10)

@@ -12,7 +12,7 @@
 
 namespace pscomp_bench {
 
-constexpr std::uint32_t kSeed = 0xC0DEBABEu;
+constexpr std::uint32_t kSeed = 42;
 
 inline std::vector<pscomp::ModInt998> make_random_ntt(std::size_t n,
                                                        bool g0_zero = false,

@@ -17,6 +17,7 @@ using pscomp::transpose::extract_dual_basic;
 using pscomp::transpose::extract_dual_inplace;
 using pscomp::transpose::extract_dual_truncated_mul;
 using pscomp::transpose::extract_dual_threshold;
+using pscomp::transpose::extract_dual_combined;
 
 namespace {
 
@@ -148,6 +149,7 @@ TEST(ExtractDualVariants, SmallCrossAgreement) {
         auto inp  = extract_dual_inplace<ModInt998>(sc, sg, n, m);
         auto tmul = extract_dual_truncated_mul<ModInt998>(sc, sg, n, m);
         auto thr  = extract_dual_threshold<ModInt998>(sc, sg, n, m, 4);
+        auto comb = extract_dual_combined<ModInt998>(sc, sg, n, m, 4);
 
         ASSERT_EQ(ref.size(), m);
         for (std::size_t j = 0; j < m; ++j) {
@@ -157,6 +159,8 @@ TEST(ExtractDualVariants, SmallCrossAgreement) {
                 << "truncated_mul: n=" << n << " j=" << j;
             EXPECT_EQ(thr[j].to_uint(), ref[j].to_uint())
                 << "threshold: n=" << n << " j=" << j;
+            EXPECT_EQ(comb[j].to_uint(), ref[j].to_uint())
+                << "combined: n=" << n << " j=" << j;
         }
     }
 }
@@ -174,6 +178,7 @@ TEST(ExtractDualVariants, MediumCrossAgreement) {
         auto inp  = extract_dual_inplace<ModInt998>(sc, sg, n, m);
         auto tmul = extract_dual_truncated_mul<ModInt998>(sc, sg, n, m);
         auto thr  = extract_dual_threshold<ModInt998>(sc, sg, n, m, 16);
+        auto comb = extract_dual_combined<ModInt998>(sc, sg, n, m, 16);
 
         ASSERT_EQ(ref.size(), m);
         for (std::size_t j = 0; j < m; ++j) {
@@ -183,6 +188,8 @@ TEST(ExtractDualVariants, MediumCrossAgreement) {
                 << "truncated_mul: n=" << n << " j=" << j;
             EXPECT_EQ(thr[j].to_uint(), ref[j].to_uint())
                 << "threshold: n=" << n << " j=" << j;
+            EXPECT_EQ(comb[j].to_uint(), ref[j].to_uint())
+                << "combined: n=" << n << " j=" << j;
         }
     }
 }
@@ -197,12 +204,15 @@ TEST(ExtractDualVariants, ThresholdFallbackAgreement) {
 
         auto sc = span<const ModInt998>(c);
         auto sg = span<const ModInt998>(g);
-        auto ref = extract_dual_basic<ModInt998>(sc, sg, n, m);
-        auto thr = extract_dual_threshold<ModInt998>(sc, sg, n, m, 64);
+        auto ref  = extract_dual_basic<ModInt998>(sc, sg, n, m);
+        auto thr  = extract_dual_threshold<ModInt998>(sc, sg, n, m, 64);
+        auto comb = extract_dual_combined<ModInt998>(sc, sg, n, m, 64);
 
         for (std::size_t j = 0; j < m; ++j) {
             EXPECT_EQ(thr[j].to_uint(), ref[j].to_uint())
                 << "threshold(64): n=" << n << " j=" << j;
+            EXPECT_EQ(comb[j].to_uint(), ref[j].to_uint())
+                << "combined(64): n=" << n << " j=" << j;
         }
     }
 }

@@ -12,10 +12,26 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-FAMILY_ORDER: List[str] = [
+FAMILY_ORDER_NTT: List[str] = [
     "Naive",
     "Brent-Kung",
     "Kinoshita-Li",
+]
+
+FAMILY_ORDER_FFT: List[str] = [
+    "Naive",
+    "Brent-Kung",
+    "Kinoshita-Li",
+]
+
+FAMILY_ORDER = FAMILY_ORDER_NTT
+
+_DUAL_VARIANTS = [
+    ("kl_dual_basic", "basic"),
+    ("kl_dual_inplace", "inplace"),
+    ("kl_dual_truncated_mul", "trunc_mul"),
+    ("kl_dual_threshold", "threshold"),
+    ("kl_dual_combined", "combined"),
 ]
 
 def _variant_chains(prefix: str = "ntt") -> Dict[str, List[Tuple[str, str]]]:
@@ -30,15 +46,25 @@ def _variant_chains(prefix: str = "ntt") -> Dict[str, List[Tuple[str, str]]]:
             (f"{prefix}/brent_kung_tuned_m", "tuned_m"),
         ],
         "Kinoshita-Li": [
-            (f"{prefix}/kl_dual_basic", "basic"),
-            (f"{prefix}/kl_dual_inplace", "inplace"),
-            (f"{prefix}/kl_dual_truncated_mul", "trunc_mul"),
-            (f"{prefix}/kl_dual_threshold", "threshold"),
+            (f"{prefix}/{name}", label) for name, label in _DUAL_VARIANTS
         ],
     }
 
-VARIANT_CHAINS = _variant_chains("ntt")
+NTT_VARIANT_CHAINS = _variant_chains("ntt")
+FFT_VARIANT_CHAINS: Dict[str, List[Tuple[str, str]]] = {
+    "Naive": [
+        ("fft/naive_horner", "Horner"),
+    ],
+    "Brent-Kung": [
+        ("fft/brent_kung_opt", "opt"),
+    ],
+    "Kinoshita-Li": [
+        (f"fft/{name}", label) for name, label in _DUAL_VARIANTS
+    ],
+}
 MEM_VARIANT_CHAINS = _variant_chains("mem")
+
+VARIANT_CHAINS = NTT_VARIANT_CHAINS
 
 def parse_json(path: str) -> Dict[str, Dict[int, float]]:
     import json
@@ -148,15 +174,20 @@ def _filter_skipped(data: Dict[str, Dict[int, float]]) -> Dict[str, Dict[int, fl
     return out
 
 
-def plot_time_heatmap(data: Dict[str, Dict[int, float]], out_dir: str) -> None:
+def _plot_time_heatmap_single(
+    data: Dict[str, Dict[int, float]],
+    chains: Dict[str, List[Tuple[str, str]]],
+    title: str,
+    out_path: str,
+) -> None:
     all_variants: List[Tuple[str, str, str]] = []
     for fam in FAMILY_ORDER:
-        for bench, label in VARIANT_CHAINS[fam]:
+        for bench, label in chains.get(fam, []):
             if bench in data:
                 all_variants.append((fam, label, bench))
 
     if not all_variants:
-        print("  [skip] time heatmap: no data")
+        print(f"  [skip] {title}: no data")
         return
 
     all_ns = sorted(set(n for bench in data for n in data[bench]))
@@ -201,7 +232,7 @@ def plot_time_heatmap(data: Dict[str, Dict[int, float]], out_dir: str) -> None:
     ax.set_yticks(range(len(all_variants)))
     ax.set_yticklabels(row_labels, fontsize=8)
     ax.set_xlabel("n", fontsize=11)
-    ax.set_title("Time (ms) \u2014 all variants \u00d7 sizes", fontsize=12)
+    ax.set_title(f"{title}", fontsize=12)
 
     cbar = fig.colorbar(im, ax=ax, shrink=0.8)
     cbar.set_label("log\u2081\u2080(ms)", fontsize=10)
@@ -213,10 +244,22 @@ def plot_time_heatmap(data: Dict[str, Dict[int, float]], out_dir: str) -> None:
         prev_fam = fam
 
     fig.tight_layout()
-    out_path = os.path.join(out_dir, "heatmap_time.png")
     fig.savefig(out_path, dpi=200, bbox_inches="tight")
     plt.close(fig)
     print(f"  -> {out_path}")
+
+
+def plot_time_heatmap(data: Dict[str, Dict[int, float]], out_dir: str) -> None:
+    _plot_time_heatmap_single(
+        data, NTT_VARIANT_CHAINS,
+        "Time (ms) \u2014 NTT variants \u00d7 sizes",
+        os.path.join(out_dir, "heatmap_time.png"),
+    )
+    _plot_time_heatmap_single(
+        data, FFT_VARIANT_CHAINS,
+        "Time (ms) \u2014 FFT variants \u00d7 sizes",
+        os.path.join(out_dir, "heatmap_time_fft.png"),
+    )
 
 
 def _parse_memory_json(path: str) -> Dict[str, Dict[int, float]]:
@@ -299,7 +342,7 @@ def plot_memory_heatmap(data: Dict[str, Dict[int, float]], out_dir: str) -> None
     chains = MEM_VARIANT_CHAINS
     all_variants: List[Tuple[str, str, str]] = []
     for fam in FAMILY_ORDER:
-        for bench, label in chains[fam]:
+        for bench, label in chains.get(fam, []):
             if bench in data:
                 all_variants.append((fam, label, bench))
 

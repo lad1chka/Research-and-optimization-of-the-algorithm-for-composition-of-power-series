@@ -60,6 +60,7 @@ void register_all() {
     using pscomp::transpose::extract_dual_inplace;
     using pscomp::transpose::extract_dual_truncated_mul;
     using pscomp::transpose::extract_dual_threshold;
+    using pscomp::transpose::extract_dual_combined;
 
     reg("mem/kl_dual_basic",         [](auto f, auto g, std::size_t n) {
         return extract_dual_basic<ModInt998>(f, g, n, n); }, 65536);
@@ -69,6 +70,8 @@ void register_all() {
         return extract_dual_truncated_mul<ModInt998>(f, g, n, n); }, 65536);
     reg("mem/kl_dual_threshold",     [](auto f, auto g, std::size_t n) {
         return extract_dual_threshold<ModInt998>(f, g, n, n, 64); }, 65536);
+    reg("mem/kl_dual_combined",      [](auto f, auto g, std::size_t n) {
+        return extract_dual_combined<ModInt998>(f, g, n, n, 64); }, 65536);
 }
 
 }  // namespace

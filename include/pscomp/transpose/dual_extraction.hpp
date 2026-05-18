@@ -438,6 +438,59 @@ std::vector<Coef> extract_dual_threshold(span<const Coef> c,
 }
 
 template <class Coef>
+std::vector<Coef> extract_dual_combined(span<const Coef> c,
+                                        span<const Coef> g,
+                                        std::size_t n,
+                                        std::size_t m,
+                                        std::size_t naive_threshold = 64) {
+    if (n <= naive_threshold) {
+        return dual_detail::extract_dual_brute<Coef>(c, g, n, m);
+    }
+
+    using dual_detail::bi_mul_x_truncated;
+    using dual_detail::negate_odd_x_inplace;
+    using dual_detail::take_x_parity;
+    if (n == 0 || m == 0) return std::vector<Coef>(m, coef_zero<Coef>());
+
+    auto P = dual_detail::build_initial_P_dual<Coef>(c, n);
+
+    BiPoly<Coef> Q(n);
+    Q[0].assign(2, coef_zero<Coef>());
+    Q[0][0] = coef_one<Coef>();
+    {
+        const std::size_t lim = std::min(n, g.size());
+        for (std::size_t i = 1; i < lim; ++i) {
+            Q[i].assign(2, coef_zero<Coef>());
+            Q[i][1] = coef_zero<Coef>() - g[i];
+        }
+    }
+    for (std::size_t i = 1; i < n; ++i) {
+        if (Q[i].empty()) Q[i].assign(2, coef_zero<Coef>());
+    }
+
+    BiPoly<Coef> Qm, U, V;
+    std::size_t target_x = n - 1;
+    while (target_x > 0) {
+        Qm = Q;
+        negate_odd_x_inplace(Qm);
+        const std::size_t parity = target_x & 1u;
+        const std::size_t x_cap = target_x + 1;
+
+        const std::size_t dy_p  = dual_detail::max_y<Coef>(P);
+        const std::size_t dy_q  = dual_detail::max_y<Coef>(Q);
+        const std::size_t dy_qm = dual_detail::max_y<Coef>(Qm);
+        U = bi_mul_x_truncated<Coef>(P, Qm, x_cap, std::min(m, dy_p + dy_qm));
+        P = take_x_parity<Coef>(U, parity);
+
+        V = bi_mul_x_truncated<Coef>(Q, Qm, x_cap, std::min(m, dy_q + dy_qm));
+        Q = take_x_parity<Coef>(V, 0);
+
+        target_x = (target_x - parity) / 2;
+    }
+    return dual_detail::finalise_dual<Coef>(P, m);
+}
+
+template <class Coef>
 std::vector<Coef> extract_dual(span<const Coef> c,
                                span<const Coef> g,
                                std::size_t n,

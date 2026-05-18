@@ -68,6 +68,7 @@ void register_all_ntt() {
     using pscomp::transpose::extract_dual_inplace;
     using pscomp::transpose::extract_dual_truncated_mul;
     using pscomp::transpose::extract_dual_threshold;
+    using pscomp::transpose::extract_dual_combined;
 
     add("ntt/kl_dual_basic", [](auto f, auto g, std::size_t n) {
         return extract_dual_basic<ModInt998>(f, g, n, n);
@@ -80,6 +81,9 @@ void register_all_ntt() {
     });
     add("ntt/kl_dual_threshold", [](auto f, auto g, std::size_t n) {
         return extract_dual_threshold<ModInt998>(f, g, n, n, 64);
+    });
+    add("ntt/kl_dual_combined", [](auto f, auto g, std::size_t n) {
+        return extract_dual_combined<ModInt998>(f, g, n, n, 64);
     });
 }
 
@@ -118,6 +122,28 @@ void register_all_fft() {
         return n <= 4096
             ? compose_kl_tellegen<double>(f, g, n)
             : std::vector<double>(n);
+    });
+
+    using pscomp::transpose::extract_dual_basic;
+    using pscomp::transpose::extract_dual_inplace;
+    using pscomp::transpose::extract_dual_truncated_mul;
+    using pscomp::transpose::extract_dual_threshold;
+    using pscomp::transpose::extract_dual_combined;
+
+    add("fft/kl_dual_basic", [](auto f, auto g, std::size_t n) {
+        return extract_dual_basic<double>(f, g, n, n);
+    });
+    add("fft/kl_dual_inplace", [](auto f, auto g, std::size_t n) {
+        return extract_dual_inplace<double>(f, g, n, n);
+    });
+    add("fft/kl_dual_truncated_mul", [](auto f, auto g, std::size_t n) {
+        return extract_dual_truncated_mul<double>(f, g, n, n);
+    });
+    add("fft/kl_dual_threshold", [](auto f, auto g, std::size_t n) {
+        return extract_dual_threshold<double>(f, g, n, n, 64);
+    });
+    add("fft/kl_dual_combined", [](auto f, auto g, std::size_t n) {
+        return extract_dual_combined<double>(f, g, n, n, 64);
     });
 }
 
